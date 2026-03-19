@@ -190,6 +190,15 @@ transition: fade-out
 
 </div>
 
+<style>
+.slidev-page,
+.slidev-layout,
+.slidev-layout * {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+</style>
+
 <!--
 Mostrar cada caso con v-click progresivo. En "Hobby" mencionar los robots que hicieron en los talleres (hay fotos de eso). En "Productos comerciales" preguntar: ¿cuántos usan un teclado mecánico? Adivinen qué microcontrolador tiene adentro.
 -->
@@ -1058,3 +1067,18 @@ Presentación creada con [Slidev](https://sli.dev) · Imágenes propias del tall
 <!--
 Dejar estas referencias disponibles para que los estudiantes profundicen por su cuenta. Hackaday es especialmente valioso — tiene artículos técnicos accesibles sobre hardware real. La documentación de ESP-IDF es la fuente de verdad para el ESP32.
 -->
+
+<style>
+.slidev-layout,
+.slidev-layout * {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+html,
+body,
+#app {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+</style>
