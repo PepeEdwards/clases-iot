@@ -205,7 +205,7 @@ Mostrar cada caso con v-click progresivo. En "Hobby" mencionar los robots que hi
 
 ---
 layout: image-right
-image: /images/arduino uno r3.png
+image: ./images/arduino uno r3.png
 transition: slide-left
 ---
 
@@ -221,7 +221,7 @@ transition: slide-left
 
 ---
 layout: image-right
-image: /images/Arduino team history.jpg
+image: ./images/Arduino team history.jpg
 transition: slide-up
 ---
 
@@ -246,7 +246,7 @@ Hacer pausa dramática en "el nombre no viene de un lab...". Dejar que la audien
 
 ---
 layout: image-right
-image: /images/Bar di re arduino.png
+image: ./images/Bar di re arduino.png
 transition: fade-out
 ---
 
@@ -278,7 +278,7 @@ El "giro de taller" es para generar debate: ¿es Arduino realmente original? La 
 
 ---
 layout: image-right
-image: /images/Raspberry Pi Model B 2012.png
+image: ./images/Raspberry Pi Model B 2012.png
 transition: slide-left
 ---
 
@@ -303,7 +303,7 @@ Preguntar: ¿quién tiene una Raspberry Pi en casa? ¿para qué la usan? Mencion
 
 ---
 layout: image-right
-image: /images/Raspberry pi zero on a magazine.jpg
+image: ./images/Raspberry pi zero on a magazine.jpg
 transition: fade-out
 ---
 
@@ -396,7 +396,7 @@ La competencia es buena para el precio y la innovación. Mencionar que Qualcomm 
 
 ---
 layout: image-right
-image: /images/arm cortex processor diagram.jpg
+image: ./images/arm cortex processor diagram.jpg
 transition: slide-left
 ---
 
@@ -498,7 +498,7 @@ Hacer analogía con videojuego: cada plataforma tiene sus stats. Un microcontrol
 
 ---
 layout: image-right
-image: /images/arduino ide.png
+image: ./images/arduino ide.png
 transition: fade-out
 ---
 
@@ -558,7 +558,7 @@ Contrastar con STM (corporación francesa-italiana), Qualcomm (empresa estadouni
 
 ---
 layout: image-right
-image: /images/esp8266 board.jpg
+image: ./images/esp8266 board.jpg
 transition: fade-out
 ---
 
@@ -588,7 +588,7 @@ La historia del ESP8266 es un clásico de cultura hacker: nadie esperaba que eso
 
 ---
 layout: image-right
-image: /images/esp32 s3.jpg
+image: ./images/esp32 s3.jpg
 backgroundSize: contain
 transition: slide-up
 ---
@@ -688,7 +688,7 @@ De menor a mayor complejidad: Arduino IDE → MicroPython → ESP-IDF. Para el t
 
 ---
 layout: image-right
-image: /images/esp32 processor block diagram.jpg
+image: ./images/esp32 processor block diagram.jpg
 backgroundSize: contain
 transition: slide-left
 ---
@@ -780,7 +780,7 @@ Analogía con PC: ROM Bootloader = BIOS/UEFI (inmutable). 2nd Stage Bootloader =
 
 ---
 layout: image-right
-image: /images/ESP32 Dev Kit.png
+image: ./images/ESP32 Dev Kit.png
 transition: slide-up
 ---
 
@@ -810,7 +810,7 @@ El Deep Sleep es revolucionario para sensores IoT con batería. Ejemplo real: se
 
 ---
 layout: image-right
-image: /images/IoT devices on the streets.jpg
+image: ./images/IoT devices on the streets.jpg
 transition: slide-left
 ---
 

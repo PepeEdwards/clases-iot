@@ -221,7 +221,7 @@ En el ESP32-S3 del laboratorio ya tienen un WS2812 integrado en la placa, así q
 
 ---
 layout: image-right
-image: /images/clase 2/arduino_IDE_2_X.png
+image: ./images/clase 2/arduino_IDE_2_X.png
 backgroundSize: contain
 transition: slide-left
 ---

@@ -3,9 +3,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build",
-    "dev": "slidev --open",
-    "export": "slidev export"
+    "build": "node ./node_modules/@slidev/cli/bin/slidev.mjs build",
+    "build:pages": "node ./node_modules/@slidev/cli/bin/slidev.mjs build --base /clases-iot/",
+    "dev": "node ./node_modules/@slidev/cli/bin/slidev.mjs --open",
+    "export": "node ./node_modules/@slidev/cli/bin/slidev.mjs export"
   },
   "dependencies": {
     "@slidev/cli": "^52.12.0",

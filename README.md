@@ -1,11 +1,35 @@
-# Welcome to [Slidev](https://github.com/slidevjs/slidev)!
+# Clases IoT con Slidev
 
-To start the slide show:
+Presentaciones del curso construidas con [Slidev](https://github.com/slidevjs/slidev).
 
-- `pnpm install`
-- `pnpm dev`
-- visit <http://localhost:3030>
+## Desarrollo local
 
-Edit the [slides.md](./slides.md) to see the changes.
+```bash
+npm install
+npm run dev
+```
 
-Learn more about Slidev at the [documentation](https://sli.dev/).
+Luego abre `http://localhost:3030`.
+
+## Build local
+
+```bash
+npm run build
+```
+
+## Deploy automático con GitHub Pages
+
+El repositorio ya queda configurado para publicar las slides con GitHub Actions en cada push a `main`.
+
+URL esperada:
+
+`https://pepeedwards.github.io/clases-iot/`
+
+Pasos necesarios en GitHub:
+
+1. Entra a `Settings > Pages`.
+2. En `Source`, selecciona `GitHub Actions`.
+3. Haz push a `main`.
+4. Espera que termine el workflow `Deploy Slides to GitHub Pages`.
+
+El workflow compila Slidev hacia `dist`, publica ese directorio en GitHub Pages y además genera `404.html` para que las rutas del sitio funcionen mejor en Pages.
