@@ -11,6 +11,28 @@ npm run dev
 
 Luego abre `http://localhost:3030`.
 
+## Abrir otro archivo `.md`
+
+`npm run dev` abre el archivo por defecto, que es `slides.md`.
+
+Si quieres levantar otra presentación, puedes usar una forma más corta con `npx`:
+
+```bash
+npx slidev clase_3.md --open
+```
+
+También funciona con cualquier otro archivo, por ejemplo:
+
+```bash
+npx slidev clase_1.md --open
+```
+
+Alternativa equivalente con `npm`:
+
+```bash
+npm exec slidev clase_3.md -- --open
+```
+
 ## Build local
 
 ```bash

@@ -716,7 +716,10 @@ const char* PASS = "ClaveDeRed";
 
 void setup() {
   Serial.begin(115200);
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(false);
   WiFi.mode(WIFI_STA);
+  WiFi.setTxPower(WIFI_POWER_17dBm);
   WiFi.begin(SSID, PASS);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -798,7 +801,7 @@ transition: slide-left
 **Formato y plazo**
 
 - Entrega solo por `Canvas`.
-- Fecha límite: **27 de marzo de 2026, 23:59 hrs**.
+- Fecha límite: **29 de marzo de 2026, 23:59 hrs**.
 - Entregas fuera de plazo no se evalúan salvo autorización previa del equipo docente.
 - Subir un único archivo comprimido `.zip`.
 
