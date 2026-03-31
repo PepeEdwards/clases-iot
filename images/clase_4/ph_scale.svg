@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" width="720" height="200">
+  <defs>
+    <linearGradient id="phGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#dc2626"/>
+      <stop offset="14%"  stop-color="#ea580c"/>
+      <stop offset="28%"  stop-color="#d97706"/>
+      <stop offset="42%"  stop-color="#ca8a04"/>
+      <stop offset="50%"  stop-color="#16a34a"/>
+      <stop offset="58%"  stop-color="#0891b2"/>
+      <stop offset="72%"  stop-color="#2563eb"/>
+      <stop offset="86%"  stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="200" fill="#111827" rx="12"/>
+
+  <!-- Title -->
+  <text x="360" y="24" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="bold" fill="#f9fafb">ESCALA DE pH</text>
+
+  <!-- Gradient bar -->
+  <rect x="30" y="38" width="660" height="36" rx="6" fill="url(#phGrad)"/>
+
+  <!-- pH value ticks and numbers -->
+  <g font-family="Roboto, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">
+    <text x="30"  y="94">0</text>
+    <text x="90"  y="94">1</text>
+    <text x="150" y="94">2</text>
+    <text x="210" y="94">3</text>
+    <text x="270" y="94">4</text>
+    <text x="330" y="94">5</text>
+    <text x="360" y="94">6</text>
+    <text x="390" y="94">7</text>
+    <text x="420" y="94">8</text>
+    <text x="480" y="94">9</text>
+    <text x="540" y="94">10</text>
+    <text x="600" y="94">11</text>
+    <text x="630" y="94">12</text>
+    <text x="660" y="94">13</text>
+    <text x="690" y="94">14</text>
+  </g>
+
+  <!-- Tick marks -->
+  <g stroke="white" stroke-width="1.5" opacity="0.6">
+    <line x1="30"  y1="74" x2="30"  y2="82"/>
+    <line x1="90"  y1="74" x2="90"  y2="82"/>
+    <line x1="150" y1="74" x2="150" y2="82"/>
+    <line x1="210" y1="74" x2="210" y2="82"/>
+    <line x1="270" y1="74" x2="270" y2="82"/>
+    <line x1="330" y1="74" x2="330" y2="82"/>
+    <line x1="360" y1="70" x2="360" y2="82"/>
+    <line x1="390" y1="74" x2="390" y2="82"/>
+    <line x1="420" y1="74" x2="420" y2="82"/>
+    <line x1="480" y1="74" x2="480" y2="82"/>
+    <line x1="540" y1="74" x2="540" y2="82"/>
+    <line x1="600" y1="74" x2="600" y2="82"/>
+    <line x1="630" y1="74" x2="630" y2="82"/>
+    <line x1="660" y1="74" x2="660" y2="82"/>
+    <line x1="690" y1="74" x2="690" y2="82"/>
+  </g>
+
+  <!-- Labels row 1: examples -->
+  <g font-family="Roboto, sans-serif" font-size="9.5" fill="#e5e7eb" text-anchor="middle">
+    <text x="80"  y="118">Ácido</text>
+    <text x="80"  y="129">estomacal</text>
+    <text x="210" y="118">Vinagre</text>
+    <text x="300" y="118">Lluvia</text>
+    <text x="390" y="118">Agua</text>
+    <text x="390" y="129">pura</text>
+    <text x="480" y="118">Agua</text>
+    <text x="480" y="129">de mar</text>
+    <text x="600" y="118">Bicarbonato</text>
+    <text x="670" y="118">Lejía</text>
+  </g>
+
+  <!-- Connector lines to bar -->
+  <g stroke="#6b7280" stroke-width="1" stroke-dasharray="3,2">
+    <line x1="80"  y1="74" x2="80"  y2="112"/>
+    <line x1="210" y1="74" x2="210" y2="112"/>
+    <line x1="300" y1="74" x2="300" y2="112"/>
+    <line x1="390" y1="74" x2="390" y2="112"/>
+    <line x1="480" y1="74" x2="480" y2="112"/>
+    <line x1="600" y1="74" x2="600" y2="112"/>
+    <line x1="670" y1="74" x2="670" y2="112"/>
+  </g>
+
+  <!-- Section labels bottom -->
+  <g font-family="Roboto, sans-serif" font-size="11" font-weight="bold" text-anchor="middle">
+    <text x="195" y="162" fill="#f87171">← ÁCIDO →</text>
+    <text x="390" y="162" fill="#4ade80">NEUTRO</text>
+    <text x="555" y="162" fill="#93c5fd">← ALCALINO →</text>
+  </g>
+
+  <!-- Arrows under section labels -->
+  <g stroke-width="1.5">
+    <line x1="90" y1="168" x2="330" y2="168" stroke="#f87171"/>
+    <line x1="90" y1="168" x2="100" y2="163" stroke="#f87171"/>
+    <line x1="330" y1="168" x2="320" y2="163" stroke="#f87171"/>
+
+    <line x1="420" y1="168" x2="660" y2="168" stroke="#93c5fd"/>
+    <line x1="420" y1="168" x2="430" y2="163" stroke="#93c5fd"/>
+    <line x1="660" y1="168" x2="650" y2="163" stroke="#93c5fd"/>
+  </g>
+
+  <!-- Neutral marker -->
+  <circle cx="390" cy="56" r="5" fill="white" opacity="0.9"/>
+  <text x="390" y="186" text-anchor="middle" font-family="Roboto, sans-serif" font-size="9" fill="#d1fae5">pH 7 = neutro</text>
+</svg>
