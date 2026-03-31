@@ -85,14 +85,12 @@ transition: slide-up
 
 <div class="grid grid-cols-2 gap-6 mt-4">
   <div>
-    <Image src="/images/clase_4/esp32c3_oled.jpg" class="h-52 mx-auto rounded-xl border border-white/20 bg-white/90 p-2 object-contain" />
-    <div class="mt-3 p-3 rounded border border-purple-400/30 bg-purple-500/10 text-xs text-left">
-      <strong>OLED SSD1306:</strong> pantalla de 0.96" monocromática 128×64 px, comunicación I2C (SDA/SCL). Consumo ~20 mA a plena carga.
+    <Image src="/images/clase_4/esp32c3_oled.jpg" class="h-36 mx-auto rounded-xl border border-white/20 bg-white/90 p-2 object-contain" />
+    <div class="mt-2 p-3 rounded border border-purple-400/30 bg-purple-500/10 text-xs text-left">
+      <strong>OLED SSD1306:</strong> pantalla de 0.42" monocromática 72×40 px, comunicación I2C (SDA/SCL). Consumo ~20 mA a plena carga.
     </div>
-  </div>
-  <div class="text-left">
-    <div class="p-3 rounded-lg border border-white/20 bg-white/5 mb-3 text-sm">
-      <div class="font-bold mb-2">ESP32-C3 — arquitectura RISC-V</div>
+    <div class="mt-2 p-3 rounded-lg border border-white/20 bg-white/5 text-sm">
+      <div class="font-bold mb-1">ESP32-C3 — arquitectura RISC-V</div>
       <ul class="leading-relaxed text-xs">
         <li>Single-core 160 MHz — más económico que el S3</li>
         <li>WiFi 2.4 GHz + BLE 5, ideal para nodos IoT simples</li>
@@ -100,21 +98,25 @@ transition: slide-up
         <li>Consume menos energía en modo light sleep (~130 µA)</li>
       </ul>
     </div>
+  </div>
+  <div class="text-left">
 
 ```cpp
+#include <Arduino.h>
+#include <U8g2lib.h>
 #include <Wire.h>
-#include <Adafruit_SSD1306.h>
 
-Adafruit_SSD1306 display(128, 64, &Wire, -1);
+#define SDA_PIN 5
+#define SCL_PIN 6
+
+U8G2_SSD1306_72X40_ER_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, SDA_PIN, SCL_PIN);
 
 void setup() {
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 20);
-  display.println("Hola IoT!");
-  display.display();
+  u8g2.begin();
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_ncenB08_tr);
+  u8g2.drawStr(0, 15, "Hola IoT!");
+  u8g2.sendBuffer();
 }
 void loop() {}
 ```
@@ -182,30 +184,30 @@ void loop() {}
     </div>
     <div class="p-3 rounded border border-blue-400/30 bg-blue-500/10 text-xs text-center">
 
-**Conversión con divisor R1=10 kΩ, R2=20 kΩ:**
+**Conversión con level shifter (4 V → 3.3 V):**
 
-$V_{sensor} = V_{ADC} \times \dfrac{R_1+R_2}{R_2} = V_{ADC} \times 1.5$
+$V_{sensor} = V_{ADC} \times \dfrac{4}{3.3}$
 
-$pH = V_{sensor} \times 3.5 = V_{ADC} \times 5.25$
+$pH = V_{sensor} \times 3.5 = V_{ADC} \times \dfrac{4 \times 3.5}{3.3} \approx V_{ADC} \times 4.24$
 
 </div>
   </div>
   <div class="text-left">
 
 ```cpp
-// Divisor resistivo: R1=10kΩ en serie, R2=20kΩ a GND
-// V_sensor(max)=4V → V_adc(max)=2.67V  ✓ seguro para ESP32
-// V_adc = V_sensor × 2/3
-// pH   = V_sensor × 3.5 = V_adc × 5.25
+// Level shifter 4V → 3.3V entre driver pH y ESP32
+// V_sensor(max)=4V → V_adc(max)=3.3V  ✓ seguro para ESP32
+// V_sensor = V_adc × (4 / 3.3)
+// pH       = V_sensor × 3.5 = V_adc × 4.2424…
 
-const int   PH_PIN    = 34;
-const float PH_FACTOR = 5.25; // (3/2) × 3.5
+const int   PH_PIN    = 34; // debe ir conectado a PO
+const float PH_FACTOR = 4.2424f; // (4/3.3) × 3.5
 
 void setup() { Serial.begin(115200); }
 
 void loop() {
   int   raw = analogRead(PH_PIN);
-  float v   = raw * (3.3f / 4095.0f);
+  float v   = raw * (3.3f / 4095.0f); // de ADC a V
   float ph  = v * PH_FACTOR;
   Serial.printf("pH: %.2f\n", ph);
   delay(1000);
@@ -273,6 +275,24 @@ void loop() {
     <div class="p-1 rounded bg-yellow-500/20 border border-yellow-400/30"><div class="font-bold text-yellow-300">pH ~5</div>café negro</div>
     <div class="p-1 rounded bg-green-500/20 border border-green-400/30"><div class="font-bold text-green-300">pH ~7</div>agua destilada</div>
     <div class="p-1 rounded bg-blue-500/20 border border-blue-400/30"><div class="font-bold text-blue-300">pH ~8.3</div>bicarbonato diluido</div>
+  </div>
+</div>
+
+---
+
+# Precauciones al usar el Sensor de pH
+
+<div class="grid grid-cols-2 gap-6 mt-3">
+  <ul class="text-sm space-y-2 list-none">
+    <li>🚰 <strong>Solo en medios líquidos</strong> — la sonda de vidrio debe estar sumergida; si se seca, la membrana se deteriora irreversiblemente.</li>
+    <li>🚫 <strong>No enterrar en masas ni sustancias viscosas</strong> — suelos, arcilla, lodo denso o gelatina obstruyen la unión de referencia y arruinan la calibración.</li>
+    <li>💧 <strong>Mantener húmedo en almacenamiento</strong> — guardar con tapa y solución KCl 3 M. <strong>Nunca dejarla secar</strong> ni en agua destilada pura por tiempo prolongado.</li>
+    <li>🧼 <strong>Enjuagar entre mediciones</strong> — lavar la punta con agua destilada y secar suavemente para evitar contaminación cruzada.</li>
+    <li>🌡️ <strong>Temperatura estable</strong> — la respuesta varía con la temperatura (Nernst). Medir a temperatura constante o usar compensación ATC.</li>
+  </ul>
+  <div class="flex flex-col items-center justify-end gap-2">
+    <Image src="/images/clase_4/pH sensor washing.jpg" class="h-40 mx-auto rounded-xl border border-white/20 object-contain" />
+    <Image src="/images/clase 2/do.jpg" class="h-28 rounded-xl object-contain" />
   </div>
 </div>
 
@@ -681,7 +701,7 @@ void loop() {
 
 ---
 
-# Encoder — cerrar el lazo de control
+# Encoder — Como referencio el movimiento
 
 <div class="grid grid-cols-2 gap-6 mt-4">
   <div class="text-left">
