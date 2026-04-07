@@ -685,135 +685,145 @@ Transición al segundo bloque de la clase. Pasamos de protocolos de comunicació
 transition: slide-up
 ---
 
-# 3.1 Voltaje, Corriente y Potencia
+# Fundamentos: Voltaje, Corriente y Potencia
 
-<div class="grid grid-cols-3 gap-4 mt-4 text-left">
+<div class="grid grid-cols-2 gap-6 mt-4">
 
-  <div class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10">
-    <div class="font-bold text-sm mb-2 text-blue-300">Voltaje (V)</div>
-    <div class="text-xs opacity-90 mb-2">La "presión" que empuja la corriente.</div>
-    <div class="text-xs font-mono mb-2 bg-black/30 p-1 rounded">ESP32: 3.3V</div>
-    <div class="text-xs opacity-75">⚠️ >3.3V daña el chip</div>
+  <div class="space-y-3">
+    <div class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10">
+      <div class="font-bold text-sm text-blue-300 mb-1">Voltaje (V)</div>
+      <div class="text-xs opacity-90">La "presión" que empuja la corriente.</div>
+      <div class="text-xs opacity-75 mt-1">ESP32 necesita <strong>3.3V exactos</strong>. Más → daña. Menos → no funciona.</div>
+    </div>
+    <div class="p-3 rounded-lg border border-green-400/40 bg-green-500/10">
+      <div class="font-bold text-sm text-green-300 mb-1">Corriente (A / mA)</div>
+      <div class="text-xs opacity-90">Cantidad de electricidad que fluye.</div>
+      <div class="text-xs opacity-75 mt-1">Reposo: 30–80 mA | WiFi transmitiendo: <strong>~240 mA pico</strong></div>
+    </div>
+    <div class="p-3 rounded-lg border border-yellow-400/40 bg-yellow-500/10">
+      <div class="font-bold text-sm text-yellow-300 mb-1">Potencia P = V × I</div>
+      <div class="text-xs opacity-90">3.3V × 100mA = <strong>0.33W</strong></div>
+      <div class="text-xs opacity-75 mt-1">Útil para calcular duración de batería o calor de un regulador.</div>
+    </div>
   </div>
 
-  <div class="p-3 rounded-lg border border-green-400/40 bg-green-500/10">
-    <div class="font-bold text-sm mb-2 text-green-300">Corriente (A)</div>
-    <div class="text-xs opacity-90 mb-2">Cantidad de electricidad que fluye.</div>
-    <div class="text-xs font-mono mb-2 bg-black/30 p-1 rounded">Reposo: 30–80mA<br/>WiFi: ~240mA pico</div>
-    <div class="text-xs opacity-75">Si baja voltaje → colapso</div>
+  <div class="flex flex-col gap-3">
+    <Image src="/images/clase 2/ESP32-Power-Requirement.jpg" class="h-36 mx-auto rounded-xl border border-white/20 bg-white/90 p-2 object-contain" />
+    <div class="p-3 rounded-2xl border border-red-300/30 bg-red-500/10 text-xs">
+      <div class="text-xs uppercase tracking-wide opacity-70 mb-1">⚠️ Por qué importa</div>
+      Un voltaje incorrecto puede <strong>reiniciar el ESP32</strong>, causar errores en sensores, o dañarlo permanentemente.
+    </div>
   </div>
 
-  <div class="p-3 rounded-lg border border-yellow-400/40 bg-yellow-500/10">
-    <div class="font-bold text-sm mb-2 text-yellow-300">Potencia (W)</div>
-    <div class="text-xs opacity-90 mb-2">P = V × I</div>
-    <div class="text-xs font-mono mb-2 bg-black/30 p-1 rounded">3.3V × 100mA<br/>= 0.33W</div>
-    <div class="text-xs opacity-75">Estima duración batería</div>
-  </div>
-
-</div>
-
-<div class="mt-4 p-3 rounded bg-white/5 border border-white/10 text-xs text-center">
-  <Image src="/images/clase 2/ESP32-Power-Requirement.jpg" class="h-36 mx-auto rounded-lg object-contain" />
-</div>
-
-<div class="mt-3 p-3 rounded-2xl border border-red-300/30 bg-red-500/10">
-  <div class="text-xs uppercase tracking-wide opacity-70 mb-1">⚠️ Crítico</div>
-  <div class="text-xs leading-snug">Un voltaje incorrecto o inestable puede reiniciar el ESP32, causar lecturas erróneas de sensores, o dañarlo permanentemente.</div>
 </div>
 
 <!--
-Enfatizar que todo en electrónica comienza por entender estos tres conceptos. Usar la analogía de agua: voltaje = presión, corriente = flujo, potencia = energía por segundo.
-
-Preguntar: "¿Alguien sabe cuánta corriente consume un WiFi transmitiendo?" Conectar con la experiencia de un proyecto que bajó voltaje cuando se activa el WiFi.
+Usar la analogía del agua: voltaje = presión del grifo, corriente = caudal, potencia = litros × presión por segundo.
+Preguntar: "¿Cuánta corriente consume el ESP32 transmitiendo por WiFi?" → 240mA. Si la batería no puede entregar eso, el voltaje colapsa y el sistema falla o se reinicia.
 -->
 
 ---
 transition: slide-down
 ---
 
-# 3.1 Fuentes de Alimentación Comunes en IoT
+# Fuentes de Alimentación en IoT
 
-<div class="grid grid-cols-2 gap-4 mt-4">
+<div class="grid grid-cols-2 gap-4 mt-6">
 
   <div v-click class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10">
     <div class="font-bold text-sm mb-1 text-blue-300">🔌 USB 5V</div>
-    <div class="text-xs opacity-80">Máximo: 500mA (USB 2.0) / 900mA (USB 3.0)</div>
-    <div class="text-xs opacity-70 mt-1">✓ Cómoda para prototipado en escritorio</div>
-    <div class="text-xs opacity-70">✗ No funciona en campo sin cable</div>
+    <div class="text-xs opacity-80 space-y-1">
+      <div>500 mA (USB 2.0) / 900 mA (USB 3.0)</div>
+      <div>✓ Ideal para desarrollo en escritorio</div>
+      <div>✗ No sirve en campo sin cable</div>
+    </div>
   </div>
 
   <div v-click class="p-3 rounded-lg border border-green-400/40 bg-green-500/10">
     <div class="font-bold text-sm mb-1 text-green-300">🔋 Li-ion / LiPo</div>
-    <div class="text-xs opacity-80">Nominal: 3.7V | Recargable</div>
-    <div class="text-xs opacity-70 mt-1">✓ Mejor densidad energética</div>
-    <div class="text-xs opacity-70">✓ Estándar en IoT portátil</div>
+    <div class="text-xs opacity-80 space-y-1">
+      <div>3.7V nominal | Recargable</div>
+      <div>✓ Estándar en IoT portátil</div>
+      <div>⚠️ Requiere cargador + protección</div>
+    </div>
   </div>
 
   <div v-click class="p-3 rounded-lg border border-yellow-400/40 bg-yellow-500/10">
-    <div class="font-bold text-sm mb-1 text-yellow-300">🪫 Pilas AA</div>
-    <div class="text-xs opacity-80">1.5V por celda | 3 en serie = 4.5V</div>
-    <div class="text-xs opacity-70 mt-1">✓ Fáciles de conseguir</div>
-    <div class="text-xs opacity-70">✗ No recargables, voltaje cae con uso</div>
+    <div class="font-bold text-sm mb-1 text-yellow-300">🪫 Pilas AA (alcalinas)</div>
+    <div class="text-xs opacity-80 space-y-1">
+      <div>1.5V/celda | 3 en serie = 4.5V</div>
+      <div>✓ Fáciles de conseguir en cualquier lugar</div>
+      <div>✗ No recargables, voltaje cae con el uso</div>
+    </div>
   </div>
 
   <div v-click class="p-3 rounded-lg border border-purple-400/40 bg-purple-500/10">
     <div class="font-bold text-sm mb-1 text-purple-300">🔌 Fuente DC Externa</div>
-    <div class="text-xs opacity-80">Adaptadores de pared | Variable</div>
-    <div class="text-xs opacity-70 mt-1">✓ Para proyectos fijos, alta corriente</div>
-    <div class="text-xs opacity-70">✓ Motors, LEDs, relés</div>
+    <div class="text-xs opacity-80 space-y-1">
+      <div>Adaptadores de pared | Alta corriente</div>
+      <div>✓ Motores, LEDs, relés en proyectos fijos</div>
+      <div>✗ No es portátil</div>
+    </div>
   </div>
 
 </div>
 
 <!--
 Pregunta abierta: "¿Cuál usarían para un sensor ambiental que vive en el jardín por 6 meses?"
-
-Respuesta esperada: batería LiPo o AA pack. Explicar que USB es conveniente ahora, pero un cable a través del patio toda la temporada no es realista.
+Respuesta esperada: LiPo o AA. USB es conveniente en el escritorio, pero un cable en el jardín toda la temporada no es realista.
 -->
 
 ---
+layout: two-cols
+layoutClass: gap-12
 transition: fade-out
 ---
 
-# 3.1 Cómo Leer un Datasheet
+# Cómo Leer un Datasheet
 
-<div class="grid grid-cols-2 gap-6 mt-4">
+**Secciones clave a buscar:**
 
-  <div class="text-left">
-    <div class="font-bold text-sm mb-2 text-blue-300">Secciones clave</div>
-    <div class="text-xs space-y-1 opacity-90">
-      <div><strong>Operating Voltage:</strong> rango seguro</div>
-      <div><strong>Typical Current:</strong> consumo en distintos modos</div>
-      <div><strong>Pines de alimentación:</strong> VCC, 3V3, GND, EN</div>
-      <div><strong>Absolute Maximum:</strong> límites NUNCA superar</div>
-    </div>
-    <div class="mt-4 p-2 rounded bg-blue-500/20 border border-blue-400/40 text-xs">
-      <strong>Dato:</strong> Leer "Absolute Maximum Ratings" antes de conectar cualquier cosa.
-    </div>
+<div class="space-y-2 mt-3">
+  <div class="p-2 rounded border border-blue-400/30 bg-blue-500/10 text-xs">
+    <strong class="text-blue-300">Operating Voltage Range</strong><br/>
+    <span class="opacity-80">Rango en que el chip funciona. ESP32: 3.0V – 3.6V</span>
   </div>
-
-  <div class="text-left">
-    <div class="font-bold text-sm mb-2 text-green-300">ESP32 — Valores típicos</div>
-    <div class="text-xs space-y-1 opacity-90 font-mono bg-black/20 p-2 rounded">
-      <div>Operating: 3.0V — 3.6V</div>
-      <div>Reposo: ~30–80mA</div>
-      <div>Activo: ~80–160mA</div>
-      <div>WiFi transmit: ~240mA</div>
-      <div>Pines: 3V3, GND, EN</div>
-    </div>
+  <div class="p-2 rounded border border-green-400/30 bg-green-500/10 text-xs">
+    <strong class="text-green-300">Typical Current Consumption</strong><br/>
+    <span class="opacity-80">Consumo en cada modo: activo, sleep, WiFi TX</span>
   </div>
-
+  <div class="p-2 rounded border border-yellow-400/30 bg-yellow-500/10 text-xs">
+    <strong class="text-yellow-300">Pines de Alimentación</strong><br/>
+    <span class="opacity-80">Identificar VCC/3V3, GND, EN (enable), VBAT</span>
+  </div>
+  <div class="p-2 rounded border border-red-400/30 bg-red-500/10 text-xs">
+    <strong class="text-red-300">⚠️ Absolute Maximum Ratings</strong><br/>
+    <span class="opacity-80">La sección más importante. Leer ANTES de conectar.</span>
+  </div>
 </div>
 
-<div class="mt-6 p-4 rounded-2xl border border-red-300/30 bg-red-500/10">
-  <div class="text-xs uppercase tracking-wide opacity-70 mb-2">⚠️ Absolute Maximum Ratings</div>
-  <div class="text-xs leading-snug">Estos son los límites NUNCA deben superarse aunque sea por un instante. Superarlos daña el chip de forma permanente. <strong>Es la sección más importante de todo el datasheet.</strong></div>
+::right::
+
+**ESP32 — Valores de referencia:**
+
+<div class="mt-3 space-y-3">
+  <div class="font-mono bg-black/30 p-3 rounded text-xs leading-relaxed">
+    Operating:   3.0V — 3.6V<br/>
+    Reposo:      ~30–80 mA<br/>
+    Activo:      ~80–160 mA<br/>
+    WiFi TX:     ~240 mA pico<br/>
+    Pines:       3V3, GND, EN
+  </div>
+
+  <div class="p-3 rounded-2xl border border-red-300/30 bg-red-500/10 text-xs">
+    <div class="text-xs uppercase tracking-wide opacity-70 mb-1">⚠️ Absolute Maximum Ratings</div>
+    Los límites que <strong>NUNCA deben superarse</strong>, aunque sea por un instante. Superarlos daña el chip permanentemente, aunque parezca seguir funcionando.
+  </div>
 </div>
 
 <!--
-Mostrar un datasheet real de ESP32 en la pantalla (o traerlo impreso). Recorrer estas 4 secciones en vivo.
-
-Pregunta retórica: "¿Qué pasa si conecto 5V directo al pin 3V3 del ESP32?" → Esperamos que digan "¡Lo daña!". Exacto. Por eso leemos el datasheet primero.
+Mostrar un datasheet real de ESP32 en pantalla. Recorrer las 4 secciones en vivo.
+Pregunta retórica: "¿Qué pasa si conecto 5V directo al pin 3V3 del ESP32?" → Daño permanente. Por eso leemos el datasheet primero.
 -->
 
 ---
@@ -823,7 +833,7 @@ transition: slide-up
 
 # 3.2 Regulación de Voltaje
 
-<Image src="/images/clase_4/mosfet.jpg" class="h-48 mx-auto mt-4 rounded-xl object-contain" />
+<div class="mt-4 text-center text-xl opacity-70">LDO · Buck · Boost · Buck-Boost</div>
 
 <style>
 h1 {
@@ -838,152 +848,162 @@ h1 {
 </style>
 
 <!--
-Las fuentes rara vez entregan exactamente el voltaje que necesita el circuito. Los reguladores resuelven este problema.
+Las fuentes rara vez entregan exactamente el voltaje que necesita el circuito. Un regulador toma un voltaje variable o incorrecto y entrega uno fijo y estable.
+Sin un regulador, cualquier variación en la batería o USB llegaría directo al ESP32.
 -->
 
 ---
 transition: slide-left
 ---
 
-# 3.2 LDO (Low-Dropout Regulator)
+# LDO — El Más Simple
 
 <div class="grid grid-cols-2 gap-6 mt-4">
 
-  <div class="text-left">
-    <div class="text-xs space-y-2 opacity-90">
-      <p><strong>Funcionamiento:</strong> actúa como resistencia variable que "quema" el voltaje sobrante como calor.</p>
-      <p><strong>Entrada > Salida siempre</strong></p>
-      <p><strong>Ejemplo:</strong> 5V USB → 3.3V para ESP32</p>
+  <div class="space-y-3 text-left">
+    <div class="text-xs opacity-90">
+      Funciona como <strong>resistencia variable</strong> que quema el voltaje sobrante como calor. La entrada siempre es mayor que la salida.
     </div>
 
-    <div class="mt-3 p-2 rounded border border-yellow-400/40 bg-yellow-500/10 text-xs">
-      <strong>Disipación térmica:</strong> (5V − 3.3V) × 100mA = <strong>170mW</strong> desperdiciado como calor
+    <div class="p-2 rounded border border-yellow-400/40 bg-yellow-500/10 text-xs">
+      <strong>Disipación:</strong> (5V − 3.3V) × 100mA = <strong>170mW de calor</strong>
     </div>
 
-    <div class="mt-3 text-xs opacity-85 space-y-1">
-      <div><strong>✓ Cuándo usarlo:</strong></div>
-      <ul class="ml-3 mt-1 space-y-1">
-        <li>Corrientes bajas (&lt;200mA)</li>
-        <li>Prototipado rápido</li>
-        <li>Diferencia de voltaje pequeña</li>
-      </ul>
+    <div class="text-xs space-y-1 mt-2">
+      <div class="font-bold text-green-300">✓ Cuándo usar LDO:</div>
+      <div>• Corrientes bajas (&lt;200mA)</div>
+      <div>• Prototipado rápido en escritorio</div>
+      <div>• Diferencia de voltaje pequeña</div>
     </div>
 
-    <div class="mt-3 text-xs opacity-70 font-mono">Ejemplo: AMS1117-3.3 <br/>(presente en casi todos los módulos ESP32)</div>
+    <div class="p-2 rounded bg-black/30 text-xs font-mono opacity-75">
+      Ejemplo: AMS1117-3.3<br/>(en casi todos los módulos ESP32)
+    </div>
   </div>
 
-  <div>
-    <!-- IMAGE SUGGESTION: ./images/clase_5/ldo_ams1117.jpg — Foto del chip AMS1117 o módulo con regulador LDO integrado -->
-    <div class="p-3 rounded border border-white/20 bg-white/5 text-xs text-center opacity-70">
-      [Imagen del chip LDO o módulo con regulador]
-    </div>
+  <div class="text-left">
+
+```mermaid {scale: 0.55}
+flowchart LR
+    VIN["VIN\n5V"] --> LDO["LDO\nAMS1117"]
+    LDO --> VOUT["VOUT\n3.3V"]
+    LDO --> HEAT["🔥 Calor\n170mW"]
+
+    classDef power fill:#f59e0b,color:#000,stroke:#d97706
+    classDef output fill:#10b981,color:#fff,stroke:#059669
+    classDef heat fill:#ef4444,color:#fff,stroke:#dc2626
+    class VIN power
+    class VOUT output
+    class HEAT heat
+```
+
   </div>
 
 </div>
 
 <!--
-Pregunta: "¿Cuánto calor genera un LDO si está en una caja cerrada?" → Esperar respuesta "mucho". Explicar que si el regulador quema más de ~500mW, hay que reemplazarlo por un buck o agregar un disipador.
-
-Dato curioso: los módulos ESP32 baratos del mercado casi todos usan AMS1117 porque es barato, pero genera calor si se consume mucha corriente en WiFi.
+Preguntar: "¿Cuánto calor genera el LDO si lo ponemos en una caja cerrada sin ventilación?" → Mucho, y puede hacer que el ESP32 se reinicie por temperatura.
+Regla práctica: si el regulador quema más de ~500mW necesita disipador o hay que reemplazarlo por un Buck.
 -->
 
 ---
 transition: slide-down
 ---
 
-# 3.2 Buck, Boost, Buck-Boost
+# Buck · Boost · Buck-Boost
 
 <div class="grid grid-cols-3 gap-4 mt-4 text-left">
 
   <div class="p-3 rounded-lg border border-green-400/40 bg-green-500/10">
     <div class="font-bold text-sm mb-2 text-green-300">📉 Buck (Reductor)</div>
-    <div class="text-xs opacity-90 mb-2">Alto voltaje → bajo voltaje</div>
-    <div class="text-xs opacity-80 mb-2"><strong>Eficiencia:</strong> 85–95%</div>
-    <div class="text-xs opacity-80 mb-2"><strong>Cuando:</strong> 12V → 3.3V + alta corriente</div>
-    <div class="text-xs opacity-70">Inductor + conmutación rápida (sin calor)</div>
+    <div class="text-xs space-y-1">
+      <div><strong>Alto → bajo voltaje</strong></div>
+      <div>Inductor + conmutación rápida</div>
+      <div class="text-green-300 font-bold mt-1">Eficiencia: 85–95%</div>
+      <div class="opacity-80 mt-1">Ej: 12V → 3.3V para ESP32</div>
+    </div>
   </div>
 
   <div class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10">
     <div class="font-bold text-sm mb-2 text-blue-300">📈 Boost (Elevador)</div>
-    <div class="text-xs opacity-90 mb-2">Bajo voltaje → alto voltaje</div>
-    <div class="text-xs opacity-80 mb-2"><strong>Caso típico:</strong> batería descargándose</div>
-    <div class="text-xs opacity-80 mb-2"><strong>Ejemplo:</strong> 1 pila AA → 3.3V</div>
-    <div class="text-xs opacity-70">Mantiene ESP32 vivo hasta el final</div>
+    <div class="text-xs space-y-1">
+      <div><strong>Bajo → alto voltaje</strong></div>
+      <div>Cuando la fuente puede caer</div>
+      <div class="text-blue-300 font-bold mt-1">Eficiencia: 85–90%</div>
+      <div class="opacity-80 mt-1">Ej: pila AA 1.5V → 3.3V</div>
+    </div>
   </div>
 
   <div class="p-3 rounded-lg border border-purple-400/40 bg-purple-500/10">
     <div class="font-bold text-sm mb-2 text-purple-300">↕️ Buck-Boost</div>
-    <div class="text-xs opacity-90 mb-2">Ambos sentidos (ideal para batería)</div>
-    <div class="text-xs opacity-80 mb-2"><strong>Caso:</strong> LiPo 4.2V→3.0V → 3.3V fijo</div>
-    <div class="text-xs opacity-80 mb-2"><strong>Ventaja:</strong> versátil y robusto</div>
-    <div class="text-xs opacity-70">Desventaja: más caro y complejo</div>
+    <div class="text-xs space-y-1">
+      <div><strong>Sube o baja según necesite</strong></div>
+      <div>Ideal para batería LiPo</div>
+      <div class="text-purple-300 font-bold mt-1">4.2V → 3.0V → 3.3V fijo</div>
+      <div class="opacity-80 mt-1">Más caro y complejo</div>
+    </div>
   </div>
 
 </div>
 
-<div class="mt-4 p-3 rounded bg-blue-500/20 border border-blue-400/40 text-xs">
-  <strong>Regla práctica:</strong> Si el regulador está caliente al tacto después de 30 segundos, hay un problema de eficiencia → reemplazar por buck.
+<div class="mt-4 p-3 rounded bg-white/5 border border-white/10 text-xs">
+  <strong>Regla práctica:</strong> Si el regulador está caliente al tacto después de 30 segundos → problema de eficiencia. Considerar reemplazar por Buck.
 </div>
 
 <!--
-Mostrar una foto o diagram de buck converter típico (MP1584, LM2596) si está disponible.
-
-Pregunta: "¿Cuál usarían para un proyecto con batería 12V y motor de 3.3V ESP32?" → Respuesta: Buck. ¿Por qué? Porque la diferencia es grande y la corriente es alta, el LDO se calentaría demasiado.
+Preguntar: "¿Cuál usarían para un proyecto con batería 12V y ESP32 a 3.3V?"
+Respuesta: Buck. La diferencia de voltaje es grande y la corriente puede ser alta — el LDO generaría demasiado calor.
 -->
 
 ---
 transition: fade-out
 ---
 
-# 3.2 ¿Cómo Elegir Regulador? — Checklist Mental
+# ¿Cómo Elegir el Regulador?
 
-<div class="mt-4 text-left space-y-2">
+<div class="grid grid-cols-2 gap-4 mt-4">
 
-  <div class="text-xs opacity-90">
-    <strong>1. ¿Cuánta corriente máxima necesita el sistema?</strong>
-    <div class="ml-4 text-xs opacity-75 mt-1">→ El regulador debe soportarla con margen (×1.5)</div>
+  <div class="space-y-2">
+    <div class="p-2 rounded border border-white/20 bg-white/5 text-xs">
+      <strong>1. ¿Cuánta corriente máxima necesita?</strong>
+      <div class="opacity-75 mt-1">→ El regulador debe soportar ×1.5 del máximo esperado</div>
+    </div>
+    <div class="p-2 rounded border border-white/20 bg-white/5 text-xs">
+      <strong>2. ¿Importa la duración de batería?</strong>
+      <div class="opacity-75 mt-1">→ Si sí: descartar LDO, usar Buck o Buck-Boost</div>
+    </div>
+    <div class="p-2 rounded border border-white/20 bg-white/5 text-xs">
+      <strong>3. ¿Qué tan simple debe ser el diseño?</strong>
+      <div class="opacity-75 mt-1">→ LDO = mínimo componentes. Buck necesita inductor.</div>
+    </div>
+    <div class="p-2 rounded border border-white/20 bg-white/5 text-xs">
+      <strong>4. ¿Cuánto espacio hay en el PCB?</strong>
+      <div class="opacity-75 mt-1">→ LDO compacto. Buck mayor área de PCB.</div>
+    </div>
+    <div class="mt-3 p-3 rounded border border-green-400/40 bg-green-500/10 text-xs">
+      <strong>Para este curso:</strong><br/>
+      • Escritorio / prototipo → LDO (AMS1117)<br/>
+      • Campo con batería → Buck / Buck-Boost
+    </div>
   </div>
 
-  <div class="text-xs opacity-90">
-    <strong>2. ¿Qué tan importante es la duración de batería?</strong>
-    <div class="ml-4 text-xs opacity-75 mt-1">→ Si mucho: descartar LDO, usar buck o buck-boost</div>
-  </div>
-
-  <div class="text-xs opacity-90">
-    <strong>3. ¿Cuánto espacio hay en el circuito?</strong>
-    <div class="ml-4 text-xs opacity-75 mt-1">→ LDO es compacto, buck necesita inductor</div>
-  </div>
-
-  <div class="text-xs opacity-90">
-    <strong>4. ¿Qué tan simple debe ser el diseño?</strong>
-    <div class="ml-4 text-xs opacity-75 mt-1">→ LDO gana en simplicidad, buck en eficiencia</div>
-  </div>
-
-</div>
-
-<div class="mt-6 p-3 rounded border border-green-400/40 bg-green-500/10 text-xs">
-  <strong>📚 Para este curso:</strong>
-  <div class="mt-1 opacity-85">
-    • Prototipado en escritorio → LDO (AMS1117)<br/>
-    • Proyectos con batería en campo → Buck o Buck-Boost
-  </div>
-</div>
-
-<div class="mt-4 p-3 rounded border border-purple-400/40 bg-purple-500/10">
+  <div class="p-3 rounded border border-purple-400/30 bg-purple-500/10 text-xs">
+    <div class="font-semibold text-purple-300 mb-2">Comparativa rápida</div>
 
 | Tipo | Eficiencia | Complejidad | Mejor para |
 |---|---|---|---|
-| **LDO** | ~50–70% | Muy simple | Prototipos, baja corriente |
-| **Buck** | 85–95% | Media | Alta corriente, batería |
-| **Boost** | 85–90% | Media | Batería descargándose |
-| **Buck-Boost** | 80–95% | Alta | Batería variable |
+| LDO | ~60% | ★☆☆ | Prototipado |
+| Buck | ~90% | ★★☆ | Batería, alta I |
+| Boost | ~88% | ★★☆ | Fuente baja |
+| Buck-Boost | ~85% | ★★★ | LiPo variable |
+
+  </div>
 
 </div>
 
 <!--
-Esta slide es un "checkpoint" mental. Los estudiantes pueden no recordar los detalles de cada regulador, pero si pueden responder estas 4 preguntas, sabrán qué elegir.
-
-Preguntar: "Para un collar IoT para perros con sensor GPS, batería LiPo y WiFi, ¿qué regulador?" → Esperamos Buck-Boost, porque la LiPo va a variar de 4.2V a 3V durante semanas.
+Esta slide es el checkpoint mental. Si los estudiantes pueden responder estas 4 preguntas, sabrán qué regulador elegir en cualquier proyecto.
+Caso real para discutir: collar IoT GPS + WiFi con LiPo → Buck-Boost, porque la LiPo varía de 4.2V a 3.0V durante semanas.
 -->
 
 ---
@@ -991,14 +1011,14 @@ layout: center
 transition: slide-up
 ---
 
-# 3.3 Baterías y Carga: Seguridad
+# 3.3 Baterías y Carga
 
-<Image src="/images/clase_5/cat_math.jpg" class="h-48 mx-auto mt-4 rounded-xl object-contain" />
+<div class="mt-4 text-center text-xl opacity-70">Seguridad y Protección Mínima</div>
 
 <style>
 h1 {
   background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #f59e0b 10%, #ef4444 45%, #ec4899 90%);
+  background-image: linear-gradient(45deg, #f59e0b 10%, #ef4444 50%, #ec4899 90%);
   background-size: 100%;
   -webkit-background-clip: text;
   -moz-background-clip: text;
@@ -1008,215 +1028,206 @@ h1 {
 </style>
 
 <!--
-Las baterías son el corazón de cualquier proyecto IoT portátil. Pero también son el componente más peligroso si no se usan correctamente.
+Las baterías son el corazón de cualquier proyecto IoT portátil. Pero son el componente más peligroso si no se usan correctamente.
 -->
 
 ---
 transition: slide-up
 ---
 
-# 3.3 Li-ion / LiPo — Conceptos Clave
+# Li-ion / LiPo — Voltajes Clave
 
-<div class="grid grid-cols-3 gap-4 mt-4">
+<div class="mt-6 space-y-3">
 
-  <div class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10">
-    <div class="font-bold text-sm mb-2 text-blue-300">3.7V Nominal</div>
-    <div class="text-xs opacity-90">Voltaje "promedio" de trabajo</div>
-    <div class="text-xs opacity-80 mt-2 font-mono">Usado para cálculos de energía</div>
+  <div class="p-3 rounded-lg border border-green-400/40 bg-green-500/10 flex items-center gap-4">
+    <div class="text-3xl font-bold text-green-300 shrink-0 w-16 text-right">4.2V</div>
+    <div>
+      <div class="font-bold text-sm text-green-300">Carga completa — MÁXIMO ABSOLUTO</div>
+      <div class="text-xs opacity-75 mt-1">Superar degrada la celda. Puede causar hinchamiento o incendio.</div>
+    </div>
   </div>
 
-  <div class="p-3 rounded-lg border border-green-400/40 bg-green-500/10">
-    <div class="font-bold text-sm mb-2 text-green-300">4.2V Máximo</div>
-    <div class="text-xs opacity-90">Límite absoluto de carga</div>
-    <div class="text-xs opacity-80 mt-2">Superar → degradación, hinchamiento, incendio</div>
+  <div class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10 flex items-center gap-4">
+    <div class="text-3xl font-bold text-blue-300 shrink-0 w-16 text-right">3.7V</div>
+    <div>
+      <div class="font-bold text-sm text-blue-300">Tensión nominal</div>
+      <div class="text-xs opacity-75 mt-1">El voltaje "promedio" de trabajo. Base para cálculos de energía y capacidad.</div>
+    </div>
   </div>
 
-  <div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10">
-    <div class="font-bold text-sm mb-2 text-red-300">3.0V Mínimo</div>
-    <div class="text-xs opacity-90">Corte por descarga</div>
-    <div class="text-xs opacity-80 mt-2">Descargar más → daño permanente e irreversible</div>
+  <div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 flex items-center gap-4">
+    <div class="text-3xl font-bold text-red-300 shrink-0 w-16 text-right">3.0V</div>
+    <div>
+      <div class="font-bold text-sm text-red-300">Corte por descarga — MÍNIMO</div>
+      <div class="text-xs opacity-75 mt-1">Descargar más daña irreversiblemente la celda y puede volverla peligrosa.</div>
+    </div>
   </div>
 
 </div>
 
-<div class="mt-6 p-4 rounded-2xl border border-red-300/30 bg-red-500/10">
-  <div class="text-xs uppercase tracking-wide opacity-70 mb-2">⚠️ No Negociable</div>
-  <div class="text-xs leading-snug"><strong>NUNCA cargar una LiPo que esté hinchada, golpeada o con la envoltura dañada.</strong> Es un peligro de incendio inmediato.</div>
-</div>
-
-<div class="mt-3 p-3 rounded bg-white/5 border border-white/10 text-xs">
-  <!-- IMAGE SUGGESTION: ./images/clase_5/lipo_battery.jpg — Foto de celda LiPo simple (3.7V nominal) con conector JST -->
-  [Foto de batería LiPo single-cell]
+<div class="mt-4 p-3 rounded-2xl border border-red-300/30 bg-red-500/10 text-xs">
+  <div class="text-xs uppercase tracking-wide opacity-70 mb-1">⚠️ Regla absoluta</div>
+  <strong>NUNCA cargar una LiPo hinchada, golpeada o con la envoltura dañada.</strong> Es un peligro de incendio inmediato.
 </div>
 
 <!--
-Mostrar una LiPo real en el aula si es posible. Preguntar: "¿Quién ha visto una batería hinchada?" Si alguien dice que sí, escuchar la historia (generalmente es de sobrecarga).
-
-Aclarar: estos límites (3.7V nominal, 4.2V max, 3.0V min) son específicos para Li-ion/LiPo de una celda. Otros tipos de batería tienen otros números.
+Preguntar: "¿Quién ha visto una batería hinchada?" Escuchar experiencias. Explicar que el hinchamiento es gas generado por reacciones electroquímicas no deseadas (sobrecarga o cortocircuito interno).
+Dato: estos 3 voltajes son específicos para Li-ion/LiPo de una celda. Otras químicas (NiMH, LiFePO4) tienen números distintos.
 -->
 
 ---
 transition: slide-left
 ---
 
-# 3.3 Módulos de Carga y BMS
+# TP4056 y BMS
 
 <div class="grid grid-cols-2 gap-6 mt-4">
 
-  <div class="text-left">
-    <div class="font-bold text-sm mb-2 text-green-300">TP4056</div>
-    <div class="text-xs opacity-90 space-y-1 mb-2">
-      <div>Cargador más común y barato para LiPo</div>
-      <div><strong>Entrada:</strong> USB 5V</div>
-      <div><strong>Corriente:</strong> 1A (típico)</div>
-      <div><strong>Salida:</strong> 4.2V (controlado)</div>
+  <div class="space-y-3">
+    <div class="font-bold text-sm text-green-300">TP4056 — El cargador estándar</div>
+    <div class="font-mono bg-black/30 p-2 rounded text-xs">
+      Entrada:   USB 5V<br/>
+      Corriente: 1A (típico)<br/>
+      Salida:    4.2V controlado
     </div>
-    <div class="text-xs opacity-75">Versión <strong>con protección</strong> (DW01) integrada es preferible para principiantes</div>
-
-    <div class="mt-4 font-bold text-sm mb-2 text-blue-300">¿Qué hace un BMS?</div>
-    <div class="text-xs opacity-90 space-y-1">
-      <div>✓ Protege contra <strong>sobrecarga</strong> (corta si >4.2V)</div>
-      <div>✓ Protege contra <strong>sobredescarga</strong> (corta si <3.0V)</div>
-      <div>✓ Protege contra <strong>cortocircuito</strong> instantáneo</div>
+    <div class="text-xs opacity-90">
+      Versión con <strong>DW01 integrado</strong> maneja carga y protección en un solo módulo. Preferible para principiantes.
     </div>
-
-    <div class="mt-4 p-3 rounded border border-green-400/40 bg-green-500/10 text-xs">
-      <strong>Regla:</strong> Para el curso, siempre usar módulos que <strong>incluyan BMS o protección integrada</strong>. Nunca conectar una LiPo sin protección.
+    <div class="p-2 rounded border border-teal-400/30 bg-teal-500/10 text-xs">
+      <strong>Módulos power bank:</strong> integran carga + protección + boost. Permiten cargar y usar simultáneamente.
     </div>
   </div>
 
-  <div>
-    <!-- IMAGE SUGGESTION: ./images/clase_5/tp4056_module.jpg — Foto del módulo TP4056 típico (azul PCB, USB micro, dos conectores JST) -->
-    <div class="p-3 rounded border border-white/20 bg-white/5 text-xs text-center opacity-70">
-      [Módulo de carga TP4056 típico]
+  <div class="space-y-2">
+    <div class="font-bold text-sm text-blue-300">BMS — ¿Qué protege?</div>
+    <div class="p-2 rounded border border-yellow-400/30 bg-yellow-500/10 text-xs">
+      🔋 <strong>Sobrecarga:</strong> corta si la celda supera 4.2V
+    </div>
+    <div class="p-2 rounded border border-red-400/30 bg-red-500/10 text-xs">
+      📉 <strong>Sobredescarga:</strong> corta si la celda baja de 3.0V
+    </div>
+    <div class="p-2 rounded border border-orange-400/30 bg-orange-500/10 text-xs">
+      ⚡ <strong>Cortocircuito:</strong> corta la corriente instantáneamente
+    </div>
+    <div class="mt-1 p-2 rounded border border-green-400/40 bg-green-500/10 text-xs">
+      <strong>Regla del curso:</strong> Siempre usar módulos con BMS integrado. Nunca conectar LiPo sin protección.
     </div>
   </div>
 
 </div>
 
 <!--
-Aclaración importante: el cargador TP4056 sin protección + celda LiPo sin BMS es una combinación peligrosa para principiantes en un taller. Por eso enfatizamos la versión con DW01 integrado.
-
-Si el presupuesto lo permite, mencionar módulos estilo "power bank" que integran carga + protección + boost, permitiendo cargar y usar simultáneamente. Son más caros pero más completos.
+Aclaración importante: TP4056 sin protección + LiPo sin BMS es una combinación peligrosa en un taller.
+Por eso recomendamos siempre la versión con DW01 integrado — un módulo único maneja todo.
+Mencionar los módulos power bank como alternativa más cara pero más conveniente para proyectos finales.
 -->
 
 ---
 transition: slide-down
 ---
 
-# 3.3 Buenas Prácticas de Seguridad
+# Buenas Prácticas de Seguridad
 
-<v-clicks>
+<div class="grid grid-cols-2 gap-3 mt-4">
 
-<div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 mb-2">
-  <div class="font-bold text-sm text-red-300">🔴 1. Polaridad — Verificar SIEMPRE</div>
-  <div class="text-xs opacity-80 mt-1">Un LiPo conectado al revés es un incidente inmediato. Tómate 5 segundos, verifica rojo=+, negro=−.</div>
+  <div class="space-y-2">
+    <div class="p-2 rounded border border-red-400/40 bg-red-500/10 text-xs">
+      <div class="font-bold text-red-300">🔴 1. Verificar polaridad SIEMPRE</div>
+      <div class="opacity-80 mt-1">Un LiPo al revés es un incidente inmediato. Rojo=+, Negro=−.</div>
+    </div>
+    <div class="p-2 rounded border border-red-400/40 bg-red-500/10 text-xs">
+      <div class="font-bold text-red-300">🔴 2. No dejar cargando sin supervisión</div>
+      <div class="opacity-80 mt-1">Especialmente con módulos desconocidos.</div>
+    </div>
+    <div class="p-2 rounded border border-red-400/40 bg-red-500/10 text-xs">
+      <div class="font-bold text-red-300">🔴 3. Conectores estandarizados</div>
+      <div class="opacity-80 mt-1">JST-PH 2mm en módulos ESP32. Evitar cables improvisados.</div>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <div class="p-2 rounded border border-red-400/40 bg-red-500/10 text-xs">
+      <div class="font-bold text-red-300">🔴 4. Calibre de cables correcto</div>
+      <div class="opacity-80 mt-1">1–2A → mínimo AWG 24 | Mayor corriente → AWG 22</div>
+    </div>
+    <div class="p-2 rounded border border-red-400/40 bg-red-500/10 text-xs">
+      <div class="font-bold text-red-300">🔴 5. Fusible en la línea positiva</div>
+      <div class="opacity-80 mt-1">El fusible se sacrifica antes que la batería o el ESP32.</div>
+    </div>
+    <div class="p-2 rounded border border-red-400/40 bg-red-500/10 text-xs">
+      <div class="font-bold text-red-300">🔴 6. Almacenamiento al 50% (3.8V)</div>
+      <div class="opacity-80 mt-1">Si no se usa por días. Superficie no inflamable. Nunca en bolsillos.</div>
+    </div>
+  </div>
+
 </div>
 
-<div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 mb-2">
-  <div class="font-bold text-sm text-red-300">🔴 2. Nunca Dejar Cargando Sin Supervisión</div>
-  <div class="text-xs opacity-80 mt-1">Especialmente con módulos desconocidos. Si algo falla, está aquí para verlo.</div>
+<div class="mt-3 p-3 rounded bg-white/5 border border-white/10 text-xs">
+  Estas reglas son obligatorias en el taller. Un incidente con LiPo afecta a todo el curso.
 </div>
-
-<div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 mb-2">
-  <div class="font-bold text-sm text-red-300">🔴 3. Conectores Estandarizados</div>
-  <div class="text-xs opacity-80 mt-1">Usar JST-PH 2mm (estándar en módulos ESP32). Evitar conexiones improvisadas con cables sueltos.</div>
-</div>
-
-<div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 mb-2">
-  <div class="font-bold text-sm text-red-300">🔴 4. Cables Adecuados al Calibre</div>
-  <div class="text-xs opacity-80 mt-1">1–2A → mínimo AWG 24 | Más corriente → AWG 22 o menos</div>
-</div>
-
-<div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 mb-2">
-  <div class="font-bold text-sm text-red-300">🔴 5. Fusible o PTC en Línea Positiva</div>
-  <div class="text-xs opacity-80 mt-1">Si hay cortocircuito, el fusible se sacrifica antes que la batería o el ESP32.</div>
-</div>
-
-<div class="p-3 rounded-lg border border-red-400/40 bg-red-500/10 mb-2">
-  <div class="font-bold text-sm text-red-300">🔴 6. Almacenamiento Seguro</div>
-  <div class="text-xs opacity-80 mt-1">Guardar al ~50% de carga (3.8V) si no se usa por días. Superficie no inflamable. Nunca en bolsillos o mochilas sin estuche.</div>
-</div>
-
-</v-clicks>
 
 <!--
-Estas no son "sugerencias opcionales". Son reglas de laboratorio obligatorias. Un incidente con LiPo en el taller afecta a todo el curso.
-
-Anécdota personal (si es posible): mencionar un caso de batería que se hinchó en un proyecto, cómo se identificó a tiempo, y por qué importa.
-
-Preguntar: "¿Alguien tiene una batería en el bolsillo ahora?" → Pausa dramática. "No la cargues en clase, por favor."
+Estas no son sugerencias opcionales. Son reglas de laboratorio.
+Anécdota: mencionar un caso real de batería hinchada o mal conectada. El impacto es inmediato y puede arruinar el taller.
+Preguntar: "¿Alguien tiene una LiPo en el bolsillo ahora?" → Pausa dramática.
 -->
 
 ---
+layout: two-cols
+layoutClass: gap-12
 transition: fade-out
 ---
 
-# 3.3 Medir Nivel de Batería con ESP32
+# Medir Nivel de Batería con ESP32
 
-<div class="grid grid-cols-2 gap-6 mt-4">
+**Divisor Resistivo + ADC**
 
-  <div class="text-left">
-    <div class="font-bold text-sm mb-2 text-blue-300">Divisor Resistivo + ADC</div>
-    <div class="text-xs opacity-90 space-y-2 mb-3">
-      <p><strong>Cómo:</strong> Dos resistencias reducen el voltaje de la batería al rango del ADC del ESP32 (0–3.3V).</p>
-      <p><strong>Luego:</strong> Leer con `analogRead()`, mapear a porcentaje.</p>
-    </div>
+<div class="mt-3 space-y-2">
+  <div class="text-xs opacity-90">Dos resistencias reducen el voltaje de la batería al rango del ADC del ESP32 (0–3.3V).</div>
 
-    <div class="text-xs opacity-80 space-y-1">
-      <p><strong>R1 = 10kΩ, R2 = 10kΩ</strong></p>
-      <p class="font-mono bg-black/30 p-1 rounded">V_out = V_in × R2 / (R1 + R2)</p>
-    </div>
-
-    <div class="mt-3 p-2 rounded border border-yellow-400/40 bg-yellow-500/10 text-xs">
-      <strong>⚠️ Limitaciones:</strong> El ADC es ruidoso, no lineal. La LiPo es no-lineal respecto al voltaje → la lectura es aproximada.
-    </div>
-
-    <div class="mt-3 p-2 rounded border border-green-400/40 bg-green-500/10 text-xs">
-      <strong>✓ Para el curso:</strong> Empezar con divisor resistivo para entender el concepto.
-    </div>
+  <div class="font-mono bg-black/30 p-2 rounded text-xs">
+    R1 = R2 = 10kΩ<br/>
+    V_out = V_bat × R2/(R1+R2)
   </div>
 
-  <div class="text-left">
-    <div class="font-bold text-sm mb-2 text-purple-300">Fuel Gauge (MAX17043)</div>
-    <div class="text-xs opacity-90 space-y-2 mb-3">
-      <p><strong>Cómo:</strong> IC especializado que mide la batería por impedancia interna.</p>
-      <p><strong>Comunicación:</strong> I2C con ESP32, entrega porcentaje preciso.</p>
-    </div>
+```cpp
+int raw = analogRead(ADC_PIN);
+float v = raw * (3.3 / 4095.0);
+float vbat = v * 2;  // R1 = R2
+int pct = map(vbat*100, 300, 420, 0, 100);
+```
 
-    <div class="text-xs opacity-80 space-y-1">
-      <p><strong>Ventajas:</strong></p>
-      <ul class="ml-3 space-y-1">
-        <li>✓ Mucho más preciso</li>
-        <li>✓ Compensación automática de temperatura</li>
-        <li>✓ Predicción de tiempo restante</li>
-      </ul>
-    </div>
+  <div class="p-2 rounded border border-yellow-400/40 bg-yellow-500/10 text-xs mt-1">
+    ⚠️ ADC del ESP32 es ruidoso y no lineal. LiPo tampoco es lineal → resultado es <strong>aproximado</strong>.
+  </div>
+</div>
 
-    <div class="mt-3 p-2 rounded border border-blue-400/40 bg-blue-500/10 text-xs">
-      <strong>Cuándo usar:</strong> Proyectos donde el nivel de batería importa de verdad (dispositivos portátiles, alertas de batería baja).
-    </div>
+::right::
 
-    <div class="mt-3 p-2 rounded border border-purple-400/40 bg-purple-500/10 text-xs">
-      <strong>Desventaja:</strong> Más caro, requiere I2C (1 módulo extra).
-    </div>
+**Fuel Gauge (MAX17043)**
+
+<div class="mt-3 space-y-2">
+  <div class="text-xs opacity-90">IC especializado que mide la batería por impedancia interna. Comunica por I2C y entrega % preciso.</div>
+
+  <div class="space-y-1 mt-2">
+    <div class="p-2 rounded border border-green-400/30 bg-green-500/10 text-xs">✓ Mucho más preciso que ADC</div>
+    <div class="p-2 rounded border border-green-400/30 bg-green-500/10 text-xs">✓ Compensación de temperatura</div>
+    <div class="p-2 rounded border border-green-400/30 bg-green-500/10 text-xs">✓ Predicción de tiempo restante</div>
   </div>
 
+  <div class="p-2 rounded border border-blue-400/40 bg-blue-500/10 text-xs mt-2">
+    Usar cuando el nivel de batería importa de verdad: dispositivos portátiles, alertas de batería baja.
+  </div>
+
+  <div class="p-2 rounded bg-white/5 border border-white/10 text-xs mt-2">
+    <strong>Para el curso:</strong> empezar con divisor resistivo para entender el concepto. Fuel gauge = solución profesional.
+  </div>
 </div>
 
 <!--
-Código ejemplo (pseudocódigo) para divisor resistivo:
-```cpp
-int rawVoltage = analogRead(ADC_PIN);
-float voltage = rawVoltage * (3.3 / 4095);  // Mapear a 0-3.3V
-float batteryVoltage = voltage * 2;         // Deshacemos el divisor (R1=R2)
-int percentage = map(batteryVoltage, 3.0, 4.2, 0, 100);
-Serial.println(percentage);
-```
-
-Pero advertencia: esto es puro mapeo lineal. La LiPo es no-lineal, así que la lectura va a estar "off" en los extremos.
-
-Para MAX17043, mencionar que ya hay librerías Arduino que hablan por I2C directamente.
+El map() con valores ×100 evita el uso de float donde map() usa enteros.
+Advertir: el porcentaje real de LiPo es muy no-lineal respecto al voltaje. A 3.7V no estás al 50%, estás más cerca del 20-30%.
+Para MAX17043: hay librería Arduino directa: SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library.
 -->
 
 ---
@@ -1227,15 +1238,3 @@ transition: fade-out
   <div class="text-2xl mb-8">¿Preguntas?</div>
   <Image src="/images/question_cat.jpg" class="h-72 mx-auto rounded-lg" />
 </div>
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #7dd3fc 10%, #0f766e 45%, #f59e0b 90%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
