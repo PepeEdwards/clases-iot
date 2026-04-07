@@ -28,7 +28,15 @@ fonts:
 </div>
 
 <!--
-Bienvenidos a la clase 5. Antes de entrar a los circuitos de alimentación, cerramos dos temas pendientes de la clase 4: I2C y SPI. Los usamos con el ENS160+AHT21, el DS3231 y la OLED, así que conviene entenderlos bien antes de seguir.
+clase 5. 
+
+Antes de entrar a los circuitos de alimentación, cerramos dos temas pendientes de la clase 4: I2C y SPI. 
+
+Los usamos en pantallas, lectores de memoria e incluso de ser necesario son un puente de comunicación entre dos microcontroladores... pero existen condiciones que deben respetarse para que esto funcione. 
+
+Nosotros estamos acostumbrados a conectar dispositivos por USB a un computador y que el 80% solo funcionen por conectarlos, en general el bus I2C para un micro- es lo mismo que eso pero nosotros estamos a cargo de saber que queremos leer y donde. 
+
+Despues de todo esto vamos a comenzar a ver circuitos de alimentación, por qué y cuando los necesitamos. Queremos entender bien las especificaciones para no quemar nada alimentando que es donde más fácil sale romper todo.
 -->
 
 ---
@@ -55,7 +63,7 @@ transition: slide-up
     <div class="font-mono text-5xl font-bold text-green-300 mb-3">1</div>
     <div class="font-bold text-lg mb-1">Lógico HIGH</div>
     <div class="text-sm opacity-80">Voltaje cercano a VCC</div>
-    <div class="font-mono text-green-300 mt-2 text-sm">≈ 3.3V en ESP32</div>
+    <div v-click class="font-mono text-green-300 mt-2 text-sm">≈ 3.3V en ESP32</div>
   </div>
 
   <Image src="/images/clase_5/cat_math.jpg" class="h-44 mx-auto rounded-xl object-contain" />
@@ -64,7 +72,7 @@ transition: slide-up
     <div class="font-mono text-5xl font-bold text-red-300 mb-3">0</div>
     <div class="font-bold text-lg mb-1">Lógico LOW</div>
     <div class="text-sm opacity-80">Voltaje cercano a GND</div>
-    <div class="font-mono text-red-300 mt-2 text-sm">≈ 0V en ESP32</div>
+    <div v-click class="font-mono text-red-300 mt-2 text-sm">≈ 0V en ESP32</div>
   </div>
 
 </div>
@@ -86,9 +94,14 @@ h1 {
 </style>
 
 <!--
+En los micro controladores siempre les he hablado de que un pin digital, cuando leé con digital read puede ser HIGH LOW, 1 o 0 True o false. 
+
+La realidad es que son muchas formas de decir algo super simple que es que un micro en un pin digital solo entiende Niveles de voltaje. 
+
 Preguntar: ¿qué voltaje tiene el "1" en un sistema de 5V? Cualquier valor cercano a 5V. ¿Y en un sistema de 3.3V? Cercano a 3.3V. El concepto HIGH/LOW es relativo al voltaje de alimentación.
 
-Anécdota: el ESP32 opera a 3.3V. Si conectan un sensor de 5V directamente, pueden dañarlo. Esto lo profundizamos en esta sección.
+Disclaimer de siempre:
+- El esp32 puede entender un pulso de 5V?
 -->
 
 ---
@@ -133,9 +146,18 @@ transition: slide-down
 </div>
 
 <!--
+La realidad es que esto funciona en un umbral, los micros que operan en 3v3 y ojo solo esos...
+
+Detectan HIGH por sobre los...
+
+Detectan LOW por debajo de los...
+
+
+pero que pasa en la zona intermedia? 
+
 Estos umbrales son específicos del ESP32 / familia CMOS 3.3V. Un sistema de 5V TTL tiene umbrales diferentes (HIGH ≥ 2.4V, LOW ≤ 0.4V). Por eso mezclar tecnologías requiere análisis cuidadoso.
 
-Dibujar en pizarrón: una recta vertical de 0V a 3.3V con las tres zonas coloreadas. Señalar que "flotante" cae en el medio.
+Aquí es donde cobra mucho valor el tema de los pull ups y los level shifters que mencione la clase pasada.
 -->
 
 ---
@@ -167,7 +189,7 @@ transition: slide-down
       <div class="font-bold mb-2">Solución: forzar un nivel definido por defecto</div>
       <div class="grid grid-cols-2 gap-2 mt-1">
         <div class="p-2 rounded bg-green-500/10 border border-green-400/30 text-center">
-          <div class="font-bold text-green-300 mb-1">Pull-Up</div>
+          <div class="font-bold text-green-800 mb-1">Pull-Up</div>
           <div class="opacity-70">Resistencia a VCC<br>→ defecto <strong>HIGH</strong></div>
         </div>
         <div class="p-2 rounded bg-red-500/10 border border-red-400/30 text-center">
@@ -180,7 +202,7 @@ transition: slide-down
       <div class="font-bold mb-1">¿Cuándo usar cada una?</div>
       <ul class="opacity-80 space-y-1">
         <li><strong>Pull-up:</strong> I2C, botones activos en LOW, UART en reposo</li>
-        <li><strong>Pull-down:</strong> botones activos en HIGH, señales de enable</li>
+        <li><strong>Pull-down:</strong> botones activos en HIGH, señales de enable (pines que activan un sensor u despiertan otro micro)</li>
       </ul>
     </div>
   </div>
@@ -188,8 +210,6 @@ transition: slide-down
 </div>
 
 <!--
-Demostración en el aula: conectar un cable a un pin GPIO sin pull-up y leerlo por Serial. Ver cómo cambia aleatoriamente. Agregar una resistencia pull-up y ver cómo se estabiliza en HIGH.
-
 La línea SDA de I2C sin pull-up es exactamente este escenario.
 -->
 
@@ -238,8 +258,6 @@ transition: slide-down
 </div>
 
 <!--
-Error común: conectar un shield de 5V de Arduino directamente al ESP32 sin level shifter. Los primeros ESP8266 eran más tolerantes, pero el ESP32 NO.
-
 Regla de oro: si un módulo dice "5V" en VCC, investigar si sus pines de señal también son de 5V o si ya tienen un regulador que los baja a 3.3V.
 -->
 
