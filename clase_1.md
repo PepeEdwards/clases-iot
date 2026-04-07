@@ -784,7 +784,7 @@ image: ./images/ESP32 Dev Kit.png
 transition: slide-up
 ---
 
-# Radio 2.4 GHz y energía
+# Red 2.4 GHz y energía
 
 **WiFi + Bluetooth en el mismo chip**
 
