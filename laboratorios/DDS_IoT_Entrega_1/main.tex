@@ -1,0 +1,629 @@
+% PAQUETES
+\documentclass[12pt,leqno]{article}
+\usepackage[spanish, activeacute]{babel}\unaccentedoperators
+\usepackage[dvips]{graphicx}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+\oddsidemargin -0.25in
+\textwidth 7.1in
+\topmargin -0.7in
+\textheight 10.0in
+\headheight 0in
+\parindent 0em
+
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\linespread{1.5}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{anysize}
+\usepackage{framed}
+\usepackage{fancyhdr}
+\usepackage{courier}
+\usepackage{color}
+\usepackage{listings}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{azuluandes}{RGB}{0, 51, 102}
+\definecolor{grisclaro}{RGB}{240, 240, 240}
+\definecolor{verdeito}{RGB}{0, 120, 60}
+\definecolor{rojito}{RGB}{180, 0, 0}
+
+\fancyhf{}
+\rhead{Dise\~no y Desarrollo de Sistemas IoT \vspace{0.3cm}}
+\lhead{\includegraphics[scale=0.18]{ing.png}}
+\lfoot{\scriptsize Facultad Ingenier\'ia y Ciencias Aplicadas\\Universidad de los Andes}
+\rfoot{\thepage}
+
+\renewcommand{\footrulewidth}{0.25pt}
+\addtolength{\headheight}{1.4cm}
+
+\pagestyle{fancy}
+
+\begin{document}
+
+\setlength{\parindent}{0.5cm}
+
+%% -------------------------------------------------------
+%%  PORTADA
+%% -------------------------------------------------------
+\begin{center}
+    {\color{azuluandes}\rule{\textwidth}{1.5pt}}\\[0.4cm]
+    \textbf{\LARGE Laboratorio 1 --- Entrega 1}\\[0.3cm]
+    \textbf{\Large Comunicaci\'on ESP-NOW, Sensado y Registro de Datos en la Nube}\\[0.3cm]
+    {\color{azuluandes}\rule{\textwidth}{1.5pt}}\\[0.2cm]
+    \textit{Dise\~no y Desarrollo de Sistemas IoT}\\
+    Facultad de Ingenier\'ia y Ciencias Aplicadas --- Universidad de los Andes\\[0.3cm]
+    \textbf{Fecha l\'imite de entrega:} 27 de marzo, 23:59 hrs (v\'ia Canvas)\\[0.3cm]
+\end{center}
+
+%% -------------------------------------------------------
+%%  INTRODUCCIÓN
+%% -------------------------------------------------------
+\section{Introducci\'on}
+
+Este laboratorio constituye la primera aproximaci\'on pr\'actica al ecosistema de
+desarrollo con microcontroladores ESP32 en el contexto de sistemas IoT. A lo largo
+de cuatro desaf\'ios progresivos, deber\'an construir y validar los bloques
+fundamentales que representan algunos de los sistemas de instrumentaci\'on del
+proyecto del curso: interacci\'on con actuadores LED RGB programable, detecci\'on
+de presencia con radar UART, medici\'on ambiental con sensor digital, comunicaci\'on
+inal\'ambrica mediante el protocolo ESP-NOW y registro autom\'atico de datos en la
+nube a trav\'es de Google Sheets.
+
+La experiencia est\'a dise\~nada para que el equipo distribuya responsabilidades de
+manera deliberada, de modo que cada integrante adquiera dominio sobre una parte del
+sistema y, al mismo tiempo, comprenda c\'omo se integra con el resto.
+
+\newpage
+\subsection{Trabajo en Equipo y Distribuci\'on de Roles}
+
+El laboratorio debe realizarse en grupos de \textbf{cuatro (4) integrantes}. Antes
+de comenzar, el equipo debe definir y registrar en la bit\'acora los roles de cada
+integrante. Se sugiere la siguiente distribuci\'on, aunque el equipo puede adaptarla
+seg\'un sus fortalezas:
+
+\begin{table}[!ht]
+\centering
+\begin{tabular}{|p{3.5cm}|p{9.5cm}|}
+\hline
+\textbf{Rol} & \textbf{Responsabilidades principales} \\
+\hline
+\textbf{Hardware} & Montaje del circuito en protoboard, conexionado de sensores y
+actuadores, elaboraci\'on del diagrama el\'ectrico final. \\
+\hline
+\textbf{Firmware} & Programaci\'on de ambos ESP32, integraci\'on de librer\'ias,
+depuraci\'on del c\'odigo y documentaci\'on de funciones. \\
+\hline
+\textbf{Datos y Nube} & Configuraci\'on del App Script en Google Sheets, dise\~no
+del \textit{webhook} HTTP, validaci\'on del registro de datos. \\
+\hline
+\textbf{Documentaci\'on} & Redacci\'on del informe, registro fotogr\'afico,
+elaboraci\'on de diagramas de arquitectura y consolidaci\'on de la entrega. \\
+\hline
+\end{tabular}
+\caption{Distribuci\'on sugerida de roles para el equipo.}
+\end{table}
+
+\noindent Los roles no son excluyentes: se espera colaboraci\'on transversal durante
+todo el laboratorio, especialmente en los desaf\'ios de integraci\'on.
+
+%% -------------------------------------------------------
+%%  MATERIALES
+%% -------------------------------------------------------
+\newpage
+\section{Materiales}
+
+Cada equipo dispondr\'a del siguiente kit de componentes para el desarrollo del
+laboratorio:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{5.5cm}|p{1.5cm}|p{6.5cm}|}
+\hline
+\textbf{Componente} & \textbf{Cant.} & \textbf{Descripci\'on} \\
+\hline
+ESP32-S3-WROOM-1 & 2 & Microcontrolador principal con Wi-Fi, Bluetooth y soporte
+ESP-NOW. Incluye LED RGB WS2812 integrado en la placa. \\
+\hline
+Sensor DHT11 & 1 & Sensor digital de temperatura y humedad relativa.
+Rango: 0--50\,\textdegree C, 20--90\,\% HR. \\
+\hline
+Sensor Radar HLK-LD2420 & 1 & Radar de presencia y movimiento por comunicaci\'on
+UART a 3,3\,V. Detecta distancia del objetivo. \\
+\hline
+Protoboard & 1 & Placa de prototipado sin soldadura. \\
+\hline
+Jumpers macho--macho & x & Cables de conexi\'on para protoboard. \\
+\hline
+\end{tabular}
+\caption{Kit de materiales del Laboratorio 1.}
+\end{table}
+
+%% -------------------------------------------------------
+%%  DESCRIPCIÓN DE PROTOCOLOS
+%% -------------------------------------------------------
+\section{Protocolos de Comunicaci\'on}
+
+En este laboratorio se emplean tres protocolos de comunicaci\'on: \textbf{ESP-NOW}
+para la transmisi\'on inal\'ambrica entre los dos ESP32, \textbf{UART} para la
+lectura del sensor radar HLK-LD2420, y \textbf{HTTP} para el registro de datos en
+Google Sheets mediante un \textit{Web App} de Google Apps Script. La descripci\'on
+t\'ecnica detallada de cada protocolo, sus par\'ametros de configuraci\'on y su rol
+en la arquitectura del sistema forman parte de los contenidos requeridos en el
+informe de la entrega (v\'ease secci\'on~\ref{sec:informe}).
+
+%% -------------------------------------------------------
+%%  DESAFÍOS
+%% -------------------------------------------------------
+\section{Desaf\'ios}
+
+Los cuatro desaf\'ios est\'an dise\~nados para construirse de forma incremental.
+El Desaf\'io 4 integra los resultados de los tres anteriores.
+
+\bigskip
+
+%% -------------------------------------------------------
+%%  DESAFÍO 1 (GUIADO)
+%% -------------------------------------------------------
+\subsection{Desaf\'io 1 --- Entorno de Desarrollo y Control del LED RGB WS2812}
+\label{sec:desafio1}
+
+\textbf{Objetivo:} Configurar el entorno de desarrollo para ESP32-S3 en Arduino IDE
+y controlar el LED RGB WS2812 integrado en la placa mediante la librer\'ia
+\texttt{Adafruit\_NeoPixel}, modificando su color y nivel de brillo de forma
+program\'atica.
+
+\subsubsection*{Paso 1: Instalaci\'on de Arduino IDE}
+
+Descargar e instalar Arduino IDE 2.x desde \url{https://www.arduino.cc/en/software}.
+Una vez abierto el programa, agregar el soporte para placas ESP32.
+
+\begin{enumerate}[(1)]
+    \item Abrir Arduino IDE y dirigirse a \textbf{File $\rightarrow$ Preferences}.
+    \item En el campo \textit{Additional boards manager URLs}, ingresar la siguiente
+    direcci\'on y confirmar con \textbf{OK}: \\
+    \texttt{https://espressif.github.io/arduino-esp32/package\_esp32\_index.json}
+    \item Dirigirse a \textbf{Tools $\rightarrow$ Board $\rightarrow$ Boards Manager},
+    buscar \texttt{esp32} (Espressif Systems) e instalar la versi\'on m\'as reciente.
+    \item Conectar el ESP32-S3 por USB. En \textbf{Tools $\rightarrow$ Board},
+    seleccionar \textbf{ESP32S3 Dev Module}.
+    \item En \textbf{Tools $\rightarrow$ Port}, seleccionar el puerto COM
+    correspondiente al dispositivo conectado.
+\end{enumerate}
+
+\pagebreak
+\subsubsection*{Paso 2: Instalaci\'on de la Librer\'ia Adafruit NeoPixel}
+
+En Arduino IDE, dirigirse a \textbf{Sketch $\rightarrow$ Include Library $\rightarrow$
+Manage Libraries}, buscar \texttt{Adafruit NeoPixel} e instalar la librer\'ia
+publicada por Adafruit Industries. Una vez completada la instalaci\'on, la librer\'ia
+quedar\'a disponible en \textbf{Sketch $\rightarrow$ Include Library} bajo la
+secci\'on \textit{Contributed libraries}.
+
+\subsubsection*{Paso 3: Identificaci\'on del Pin del LED WS2812}
+
+El m\'odulo ESP32-S3-WROOM-1 incorpora un LED RGB WS2812B directamente en la placa,
+conectado al \textbf{GPIO 48} en la mayor\'ia de los m\'odulos de desarrollo basados
+en este chip. Antes de programar, siempre se recomienda verificar el esquem\'atico del fabricante, ya que algunos asignan este perif\'erico a un GPIO distinto.
+
+\subsubsection*{Paso 4: Implementaci\'on del Firmware}
+
+Con el entorno configurado y la librer\'ia instalada, el equipo debe escribir el
+firmware que inicialice el objeto \texttt{Adafruit\_NeoPixel} con el GPIO y la
+cantidad de LEDs correctos, y que controle el color y el brillo del LED de forma
+c\'iclica mediante las funciones \texttt{setPixelColor()}, \texttt{setBrightness()}
+y \texttt{show()} \textit{(se revisar\'a un ejemplo de implementaci\'on durante la
+clase).}
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 1 se considera completado cuando el LED RGB enciende en al menos tres
+colores distintos con diferentes niveles de brillo de forma c\'iclica y reproducible,
+y cada cambio de estado queda reflejado en el monitor serial. Documentar con
+fotograf\'ias del hardware.
+
+\newpage
+%% -------------------------------------------------------
+%%  DESAFÍO 2
+%% -------------------------------------------------------
+\subsection{Desaf\'io 2 --- Detecci\'on de Proximidad con Radar HLK-LD2420 y Comunicaci\'on ESP-NOW}
+\label{sec:desafio2}
+
+\textbf{Objetivo:} Conectar el sensor radar HLK-LD2420 al ESP32 Nodo, leer la
+distancia del objetivo detectado y transmitirla mediante ESP-NOW al ESP32 Gateway.
+El Gateway debe indicar visualmente la proximidad del objeto mediante el LED RGB
+seg\'un la siguiente escala:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{4cm}|p{3cm}|p{6cm}|}
+\hline
+\textbf{Condici\'on} & \textbf{Color LED} & \textbf{Descripci\'on} \\
+\hline
+Sin detecci\'on o distancia $>$ 200\,cm & Rojo & Objeto fuera de rango o ausente \\
+\hline
+100\,cm $\leq$ distancia $\leq$ 200\,cm & Naranja & Objeto en rango intermedio \\
+\hline
+Distancia $<$ 100\,cm & Verde & Objeto en proximidad cercana \\
+\hline
+\end{tabular}
+\caption{Escala de proximidad e indicaci\'on visual del Gateway.}
+\label{tab:escalaproximidad}
+\end{table}
+
+\subsubsection*{Paso 1: Conexionado del HLK-LD2420 al Nodo ESP32}
+
+El sensor HLK-LD2420 se alimenta a 3,3\,V y se comunica mediante UART. Realizar las
+conexiones de alimentaci\'on seg\'un la Tabla~\ref{tab:conexionradar} y seleccionar
+los pines TX/RX de forma justificada.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{4cm}|p{4cm}|p{5cm}|}
+\hline
+\textbf{Pin HLK-LD2420} & \textbf{Pin ESP32-S3} & \textbf{Descripci\'on} \\
+\hline
+VCC & 3V3 & Alimentaci\'on 3,3\,V \\
+\hline
+GND & GND & Tierra com\'un \\
+\hline
+TX & GPIO a definir (RX) & Salida de datos del sensor \\
+\hline
+RX & GPIO a definir (TX) & Entrada de comandos al sensor \\
+\hline
+\end{tabular}
+\caption{Conexionado del HLK-LD2420 al ESP32-S3 Nodo.}
+\label{tab:conexionradar}
+\end{table}
+
+\noindent\textbf{Importante:} Los niveles l\'ogicos del HLK-LD2420 son de 3,3\,V,
+lo que lo hace compatible directo con el ESP32-S3. No se requiere divisor de voltaje
+ni adaptador de nivel l\'ogico.
+
+\noindent\textbf{Pregunta de dise\~no:} El ESP32-S3 reserva el bus \texttt{UART0}
+para la comunicaci\'on con el monitor serial a trav\'es del puerto USB.
+\textquestiondown Qu\'e ocurrir\'ia si se conectara el sensor HLK-LD2420 a los
+pines de ese mismo bus? Consideren esta restricci\'on al momento de seleccionar
+los GPIOs y justifique su elecci\'on en el informe.
+
+\subsubsection*{Paso 2: Instalaci\'on de la Librer\'ia LD2420}
+
+La comunicaci\'on con el sensor es mediante el protocolo UART, pero para simplificar las cosas durante este laboratorio nos apoyaremos de una librería hecha por la comunidad para el \texttt{LD2420}, disponible en el siguiente repositorio:
+
+\begin{center}
+    \url{https://github.com/cyrixninja/LD2420}
+\end{center}
+
+Para instalarla en Arduino IDE, seguir la secuencia indicada en la
+Tabla~\ref{tab:instalacion-zip}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{0.8cm}|p{4.5cm}|p{8cm}|}
+\hline
+\textbf{\#} & \textbf{Acci\'on} & \textbf{Detalle} \\
+\hline
+1 & Descargar el repositorio &
+    En la p\'agina de GitHub, hacer clic en \textbf{Code $\rightarrow$ Download ZIP}
+    y guardar el archivo en el equipo. \\
+\hline
+2 & Abrir el gestor de librer\'ias &
+    En Arduino IDE, ir a \textbf{Sketch $\rightarrow$ Include Library
+    $\rightarrow$ Add .ZIP Library\ldots} \\
+\hline
+3 & Seleccionar el archivo &
+    Navegar hasta el archivo \texttt{.zip} descargado y confirmar con
+    \textbf{Abrir}. Arduino IDE instalar\'a la librer\'ia autom\'aticamente. \\
+\hline
+4 & Verificar la instalaci\'on &
+    Crear un nuevo sketch y agregar \texttt{\#include "LD2420.h"}.
+    Si no aparece ning\'un error de compilaci\'on, la instalaci\'on
+    fue exitosa. \\
+\hline
+\end{tabular}
+\caption{Instalaci\'on de librer\'ia desde archivo ZIP en Arduino IDE.}
+\label{tab:instalacion-zip}
+\end{table}
+
+\pagebreak
+\subsubsection*{Paso 3: Inicializaci\'on del Sensor y Lectura de Distancia}
+
+Una vez instalada la librer\'ia, el equipo debe inicializar el objeto \texttt{LD2420}
+sobre \texttt{Serial2} con los pines definidos en la Tabla~\ref{tab:conexionradar},
+configurar el rango de detecci\'on y el intervalo de actualizaci\'on, y obtener la
+distancia medida mediante el m\'etodo \texttt{getDistance()} dentro del ciclo
+principal \textit{(se revisar\'a un ejemplo de inicializaci\'on y lectura durante
+la clase).}
+
+\subsubsection*{Paso 4: Obtenci\'on de la Direcci\'on MAC del Gateway}
+
+Para establecer la comunicaci\'on ESP-NOW, el Nodo debe conocer la direcci\'on MAC
+del Gateway antes de compilar su firmware. Cargar un sketch temporal en el ESP32
+Gateway que imprima su direcci\'on MAC por el monitor serial utilizando
+\texttt{WiFi.macAddress()}, registrar el valor obtenido y utilizarlo en la
+configuraci\'on del \textit{peer} ESP-NOW del Nodo \textit{(se revisar\'a un
+ejemplo de este sketch durante la clase).}
+
+\subsubsection*{Paso 5: Implementaci\'on del Sistema}
+
+Con los bloques anteriores validados de forma independiente, el equipo debe integrar
+en el \textbf{Nodo}: la lectura peri\'odica del radar, el empaquetado de la distancia
+medida en una estructura de datos y su transmisi\'on v\'ia ESP-NOW al Gateway. En el
+\textbf{Gateway}: la recepci\'on del paquete y el control del LED RGB seg\'un la
+escala definida en la Tabla~\ref{tab:escalaproximidad} \textit{(se revisar\'a la
+estructura b\'asica de un sistema ESP-NOW emisor--receptor durante la clase).}
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 2 se considera completado cuando el LED del Gateway refleja correctamente
+los tres estados de proximidad en respuesta al movimiento de un objeto frente al
+radar, y ambos monitores seriales registran los eventos de transmisi\'on y recepci\'on.
+Documentar con fotograf\'ias del hardware y capturas del monitor serial para cada uno
+de los tres estados.
+
+\bigskip
+
+%% -------------------------------------------------------
+%%  DESAFÍO 3
+%% -------------------------------------------------------
+\subsection{Desaf\'io 3 --- Medici\'on Ambiental con DHT11 y Registro en Google Sheets}
+\label{sec:desafio3}
+
+\textbf{Objetivo:} Conectar el sensor DHT11 al ESP32 Gateway, conectar dicho ESP32
+a una red Wi-Fi y enviar las lecturas de temperatura y humedad a una hoja de c\'alculo
+de Google Sheets mediante un \textit{endpoint} creado con Google Apps Script.
+
+\subsubsection*{1. Configuraci\'on del Hardware}
+
+El sensor DHT11 tiene tres pines: VCC (3,3\,V o 5\,V), GND y DATA. Conectar el pin
+DATA a un GPIO libre del ESP32 Gateway. Instalar la librer\'ia \texttt{DHT sensor
+library} de Adafruit desde el gestor de librer\'ias de Arduino IDE.
+
+\subsubsection*{2. Creaci\'on del Endpoint en Google Apps Script}
+
+\begin{enumerate}[(a)]
+    \item Crear una nueva hoja de c\'alculo en Google Sheets y nombrar la primera
+    hoja \texttt{Datos}.
+    \item Definir los encabezados en la fila 1: \texttt{Timestamp},
+    \texttt{Temperatura (°C)}, \texttt{Humedad (\%)}.
+    \item En Google Sheets, ir a \textbf{Extensiones $\rightarrow$ Apps Script} e
+    implementar una funci\'on \texttt{doGet(e)} que lea los par\'ametros \texttt{temp}
+    y \texttt{hum} de la petici\'on y los registre en la hoja mediante
+    \texttt{appendRow()} \textit{(se revisar\'a el c\'odigo completo del script
+    durante la clase).}
+    \item Guardar el script y hacer clic en \textbf{Implementar $\rightarrow$
+    Nueva implementaci\'on}.
+    \item Seleccionar tipo \textbf{Aplicaci\'on web}, configurar \textit{Ejecutar
+    como} ``Yo'' y \textit{Qui\'en tiene acceso} como ``Cualquier persona''.
+    \item Autorizar los permisos solicitados y copiar la URL del \textit{Web App}
+    generada.
+\end{enumerate}
+
+\noindent La URL obtenida debe reemplazarse en el firmware del ESP32 y tratarse como
+informaci\'on confidencial; no debe compartirse p\'ublicamente.
+
+
+\pagebreak
+\subsubsection*{3. Firmware del ESP32 Gateway}
+
+El equipo debe desarrollar el firmware bas\'andose en las librer\'ias \texttt{DHT.h}
+y \texttt{HTTPClient.h}, enviando una petici\'on HTTP GET a la URL del Apps Script
+con los par\'ametros \texttt{temp} y \texttt{hum}. Se recomienda una frecuencia de
+env\'io de \textbf{30 segundos} para no saturar la hoja de c\'alculo durante las
+pruebas \textit{(se revisar\'a la estructura de la petici\'on HTTP GET durante la
+clase).}
+
+\noindent\textbf{Pregunta de dise\~no:} \textquestiondown Cu\'ales son las
+consecuencias de no configurar una frecuencia de muestreo razonable? Consideren
+el impacto tanto en el volumen de datos almacenados como en el comportamiento
+del microcontrolador y la disponibilidad del servicio receptor, y justifique
+la frecuencia elegida por el equipo en el inform
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 3 se considera completado cuando la hoja de c\'alculo de Google Sheets
+registra al menos 10 filas de datos con \textit{timestamps} correctos y valores de
+temperatura y humedad coherentes con el ambiente del laboratorio. Documentar con
+capturas de pantalla de la hoja de c\'alculo y fotograf\'ias del circuito
+implementado.
+
+\bigskip
+
+%% -------------------------------------------------------
+%%  DESAFÍO 4
+%% -------------------------------------------------------
+\subsection{Desaf\'io 4 --- Integraci\'on del Sistema Completo}
+\label{sec:desafio4}
+
+\textbf{Objetivo:} Integrar los tres desaf\'ios anteriores en un sistema que simula
+una aplicaci\'on de casa inteligente. El Nodo monitorea el entorno con el radar
+HLK-LD2420; cuando detecta presencia a menos de 200\,cm, notifica al Gateway v\'ia
+ESP-NOW. El Gateway, que cuenta con el sensor DHT11, registra la temperatura ambiente
+del instante en Google Sheets para que un sistema externo ---como una calefacci\'on
+autom\'atica--- pueda tomar decisiones basadas en ese dato.
+
+\subsubsection*{Arquitectura del Sistema}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{3.5cm}|p{9.5cm}|}
+\hline
+\textbf{Componente} & \textbf{Funci\'on en el Sistema} \\
+\hline
+\textbf{Nodo ESP32} & Monitorea el entorno con el radar HLK-LD2420 v\'ia UART.
+Cuando detecta presencia a menos de 200\,cm, transmite v\'ia ESP-NOW al Gateway
+la distancia medida y un indicador de detecci\'on. \\
+\hline
+\textbf{Gateway ESP32} & Recibe el paquete ESP-NOW. Mide la temperatura ambiente
+con el DHT11 en el instante de la notificaci\'on. Registra en Google Sheets el
+\textit{timestamp}, la distancia reportada y la temperatura medida. Controla el
+LED RGB para indicar el estado del sistema. \\
+\hline
+\textbf{Google Sheets} & Servidor de datos en la nube. Cada fila representa un
+evento de detecci\'on con su temperatura asociada, disponible para que un sistema
+externo eval\'ue si activar la calefacci\'on u otro actuador. \\
+\hline
+\end{tabular}
+\caption{Arquitectura del sistema integrado del Desaf\'io 4.}
+\end{table}
+
+\subsubsection*{Estructura del Paquete ESP-NOW}
+
+El equipo debe definir una estructura de datos en el firmware del Nodo que incluya
+al menos los campos \texttt{movimiento} (booleano) y \texttt{distancia\_cm}
+(flotante), y transmitirla como arreglo de bytes mediante \texttt{esp\_now\_send()}.
+La temperatura \textbf{no} se incluye en el paquete: es responsabilidad del Gateway
+medirla localmente con el DHT11 en el momento en que recibe la notificaci\'on
+\textit{(se revisar\'a la definici\'on de la estructura y su uso durante la clase).}
+
+\subsubsection*{L\'ogica de Comportamiento del LED en el Gateway}
+
+\begin{enumerate}[(1)]
+    \item Al recibir un paquete con \texttt{movimiento == true} (distancia
+    $<$ 200\,cm): destello azul breve (100\,ms) para confirmar recepci\'on,
+    seguido de LED \textbf{rojo} sostenido mientras el evento est\'a activo.
+    \item Al recibir un paquete con \texttt{movimiento == false}: LED \textbf{verde}
+    sostenido indicando que no hay presencia detectada.
+    \item Sin paquetes recibidos en los \'ultimos 5 segundos: LED \textbf{apagado}
+    para indicar p\'erdida de comunicaci\'on con el Nodo.
+\end{enumerate}
+
+\subsubsection*{Columnas Sugeridas en Google Sheets}
+
+\begin{center}
+\texttt{Timestamp} \quad \texttt{Distancia\_cm} \quad \texttt{Temperatura\_C}
+\quad \texttt{Humedad\_\%} \quad \texttt{Alerta}
+\end{center}
+
+\noindent El campo \texttt{Alerta} puede contener un valor como \texttt{SI} o
+\texttt{NO} seg\'un si la temperatura registrada supera un umbral definido por
+el equipo, simulando la decisi\'on de activar la calefacci\'on.
+
+\noindent\textbf{Pregunta de dise\~no:} En este sistema el Nodo transmite un paquete
+ESP-NOW \'unicamente cuando el radar detecta presencia a menos de 200\,cm, en lugar
+de enviar la distancia de forma continua. \textquestiondown Qu\'e ventajas tiene
+este enfoque basado en eventos frente a una transmisi\'on constante? Considerando
+esta arquitectura, identifique adem\'as al menos dos limitaciones concretas de
+ESP-NOW que podr\'ian afectar el funcionamiento del sistema en un despliegue real.
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 4 se considera completado cuando el sistema registra en Google Sheets
+al menos \textbf{20 eventos} durante una prueba de 10 minutos, cada uno con datos
+de distancia, temperatura y humedad coherentes con el entorno, el LED del Gateway
+responde correctamente en cada caso y no se observan reinicios inesperados en
+ninguna de las dos placas.
+
+\pagebreak
+%% -------------------------------------------------------
+%%  ENTREGA
+%% -------------------------------------------------------
+\section{Entrega del Laboratorio}
+
+\subsection{Formato y Plazo}
+
+La entrega se realiza \textbf{exclusivamente a trav\'es de Canvas} antes del
+\textbf{27 de marzo a las 23:59 hrs}. Entregas fuera de plazo no ser\'an evaluadas
+salvo justificaci\'on previa aprobada por el cuerpo docente.
+
+\subsection{Contenido de la Entrega}
+
+La entrega debe incluir los siguientes elementos en un \'unico archivo comprimido
+(\texttt{.zip}):
+
+\begin{enumerate}[(1)]
+    \item \textbf{Informe en PDF} con los contenidos descritos en la
+    secci\'on~\ref{sec:informe}.
+    \item \textbf{C\'odigos fuente} de ambos ESP32 (\texttt{.ino}) con comentarios
+    explicativos en cada funci\'on relevante.
+    \item \textbf{Link p\'ublico a Google Sheets} con los datos recolectados durante
+    el Desaf\'io 4 (incluir en el informe y en un archivo \texttt{README.txt}).
+    \item \textbf{Fotograf\'ias del sistema} en funcionamiento (m\'inimo 4
+    fotograf\'ias: circuito montado, y captura de Google
+    Sheets con datos).
+\end{enumerate}
+
+\subsection{Estructura del Informe}
+\label{sec:informe}
+
+El informe debe redactarse en formato profesional y contener las siguientes
+secciones:
+
+\begin{enumerate}[(1)]
+    \item \textbf{Portada:} Nombre del equipo, integrantes, roles asignados y fecha.
+    \item \textbf{Descripci\'on de Materiales:} Especificaciones t\'ecnicas
+    relevantes de cada componente utilizado y justificaci\'on de los pines
+    seleccionados.
+    \item \textbf{Tabla de Conexiones:} Tabla completa de conexiones a los diferentes GPIOs y pines de cada sensor.
+    \item \textbf{Protocolos de Comunicaci\'on:} Descripci\'on de ESP-NOW, UART y
+    HTTP/Google Apps Script en el contexto del sistema implementado. Incluir diagrama
+    de flujo de datos desde la detecci\'on hasta el registro en la nube.
+    \item \textbf{Arquitectura Final del Sistema:} Diagrama de bloques que muestre
+    los componentes, los protocolos entre ellos y el flujo de informaci\'on de
+    extremo a extremo.
+    \item \textbf{Observaciones:} Bit\'acora con los incidentes, errores encontrados
+    y soluciones implementadas durante el laboratorio.
+\end{enumerate}
+
+%% -------------------------------------------------------
+%%  RÚBRICA
+%% -------------------------------------------------------
+\section{Criterios de Evaluaci\'on}
+
+Se otorga \textbf{1,0 punto base} a todas las entregas realizadas
+dentro del plazo. Los puntos restantes (6,0) se distribuyen seg\'un la siguiente
+r\'ubrica del Cuadro 7.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{5.5cm}|p{1.5cm}|p{7cm}|}
+\hline
+\textbf{Criterio} & \textbf{Puntos} & \textbf{Descripci\'on} \\
+\hline
+\textbf{Desaf\'ios 1 y 2} & 1,2 & Evidencia de funcionamiento del LED WS2812
+(colores y brillo) y del sistema radar + ESP-NOW con indicaci\'on visual correcta. \\
+\hline
+\textbf{Desaf\'io 3} & 0,8 & Hoja de c\'alculo p\'ublica con al menos 10 registros
+de temperatura y humedad con \textit{timestamps} correctos. \\
+\hline
+\textbf{Desaf\'io 4 --- Sistema Integrado} & 1,0 & Hoja de c\'alculo con al menos
+20 eventos que incluyan distancia y temperatura. LED del Gateway responde
+correctamente. Sin reinicios inesperados. \\
+\hline
+\textbf{Informe --- Diagrama y Arquitectura} & 0,6 & Diagrama de conexiones completo
+y legible. Diagrama de bloques de la arquitectura del sistema con protocolos
+identificados. \\
+\hline
+\textbf{Informe y Preguntas de Dise\~no} & 2,0 & Se
+eval\'ua profundidad t\'ecnica, coherencia con el sistema implementado y claridad de
+la argumentaci\'on. \\
+\hline
+\textbf{C\'odigo Fuente} & 0,4 & C\'odigo comentado, legible y estructurado.
+Funciones con descripci\'on. Sin c\'odigo muerto ni variables sin usar. \\
+\hline
+\end{tabular}
+\caption{R\'ubrica de evaluaci\'on del Laboratorio 1 -- Entrega 1.}
+\end{table}
+
+\noindent\textbf{Nota:} La ausencia de alguno de los archivos requeridos (c\'odigo,
+link a Google Sheets, fotograf\'ias) ser\'a penalizada con 0,3 puntos por elemento
+faltante, descontados del total.
+
+\end{document}

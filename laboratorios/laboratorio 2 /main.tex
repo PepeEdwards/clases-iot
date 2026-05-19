@@ -1,0 +1,863 @@
+% PAQUETES
+\documentclass[12pt,leqno]{article}
+\usepackage[spanish, activeacute]{babel}\unaccentedoperators
+\usepackage[dvips]{graphicx}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+\oddsidemargin -0.25in
+\textwidth 7.1in
+\topmargin -0.7in
+\textheight 10.0in
+\headheight 0in
+\parindent 0em
+
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\linespread{1.5}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{anysize}
+\usepackage{framed}
+\usepackage{fancyhdr}
+\usepackage{courier}
+\usepackage{color}
+\usepackage{listings}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{azuluandes}{RGB}{0, 51, 102}
+\definecolor{grisclaro}{RGB}{240, 240, 240}
+\definecolor{verdeito}{RGB}{0, 120, 60}
+\definecolor{rojito}{RGB}{180, 0, 0}
+
+\lstset{
+  language=C++,
+  backgroundcolor=\color{grisclaro},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{azuluandes}\bfseries,
+  commentstyle=\color{dkgreen}\itshape,
+  stringstyle=\color{rojito},
+  breaklines=true,
+  breakatwhitespace=false,
+  frame=single,
+  rulecolor=\color{gray},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=6pt,
+  tabsize=2,
+  showstringspaces=false,
+  keepspaces=true,
+  columns=flexible,
+}
+
+\tcbuselibrary{skins}
+\newtcolorbox{notabox}[1][Nota]{
+  colback=grisclaro, colframe=azuluandes,
+  fonttitle=\bfseries, title=#1,
+  left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+\newtcolorbox{pensarbox}{
+  colback=verdeito!8, colframe=verdeito,
+  fonttitle=\bfseries\color{verdeito}, title=Para pensar,
+  left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\fancyhf{}
+\rhead{Dise\~no y Desarrollo de Sistemas IoT \vspace{0.3cm}}
+\lhead{\includegraphics[scale=0.18]{ing.png}}
+\lfoot{\scriptsize Facultad Ingenier\'ia y Ciencias Aplicadas\\Universidad de los Andes}
+\rfoot{\thepage}
+
+\renewcommand{\footrulewidth}{0.25pt}
+\addtolength{\headheight}{1.4cm}
+
+\pagestyle{fancy}
+
+\begin{document}
+
+\setlength{\parindent}{0.5cm}
+
+%% -------------------------------------------------------
+%%  PORTADA
+%% -------------------------------------------------------
+\begin{center}
+    {\color{azuluandes}\rule{\textwidth}{1.5pt}}\\[0.4cm]
+    \textbf{\LARGE Laboratorio 2}\\[0.3cm]
+    \textbf{\Large Sensado de pH, Visualizaci\'on en Pantalla y Comunicaci\'on ESP-NOW}\\[0.3cm]
+    {\color{azuluandes}\rule{\textwidth}{1.5pt}}\\[0.2cm]
+    \textit{Dise\~no y Desarrollo de Sistemas IoT}\\
+    Facultad de Ingenier\'ia y Ciencias Aplicadas --- Universidad de los Andes\\[0.3cm]
+\end{center}
+
+%% -------------------------------------------------------
+%%  INTRODUCCIÓN
+%% -------------------------------------------------------
+\section{Introducci\'on}
+
+Este laboratorio introduce la integraci\'on de sensores anal\'ogicos, pantallas OLED
+y comunicaci\'on inal\'ambrica entre microcontroladores en el contexto de sistemas
+IoT. A lo largo de cuatro desaf\'ios, construir\'an un sistema de monitoreo de pH
+distribuido: un nodo de adquisici\'on basado en ESP32-C3 que lee, calibra y visualiza
+el pH localmente, y un gateway basado en el m\'odulo Heltec ESP32-S3~V4 que recibe
+los datos v\'ia ESP-NOW y los despliega en su propia pantalla. La experiencia cubre
+el ciclo completo de un nodo sensor: acondicionamiento de se\~nal anal\'ogica,
+calibraci\'on en campo, transmisi\'on inal\'ambrica y presentaci\'on de datos.
+
+\subsection{Trabajo en Equipo y Distribuci\'on de Roles}
+
+El laboratorio debe realizarse en grupos de \textbf{cuatro (4) integrantes}. Antes
+de comenzar, el equipo debe definir y registrar en la bit\'acora los roles de cada
+integrante. Se sugiere la siguiente distribuci\'on:
+
+\begin{table}[!ht]
+\centering
+\begin{tabular}{|p{3.5cm}|p{9.5cm}|}
+\hline
+\textbf{Rol} & \textbf{Responsabilidades principales} \\
+\hline
+\textbf{Hardware} & Montaje del circuito en protoboard, conexionado del sensor y
+bot\'on, elaboraci\'on del diagrama el\'ectrico final. \\
+\hline
+\textbf{Firmware Nodo} & Programaci\'on del ESP32-C3: lectura ADC, calibraci\'on,
+pantalla OLED y transmisi\'on ESP-NOW. \\
+\hline
+\textbf{Firmware Gateway} & Programaci\'on del Heltec ESP32-S3: recepci\'on
+ESP-NOW y visualizaci\'on de pH en pantalla OLED integrada. \\
+\hline
+\textbf{Documentaci\'on} & Registro fotogr\'afico, diagramas de arquitectura
+y bit\'acora del equipo. \\
+\hline
+\end{tabular}
+\caption{Distribuci\'on sugerida de roles para el equipo.}
+\end{table}
+
+\noindent Los roles no son excluyentes: se espera colaboraci\'on transversal durante
+todo el laboratorio.
+
+%% -------------------------------------------------------
+%%  MATERIALES
+%% -------------------------------------------------------
+\newpage
+\section{Materiales}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{4.5cm}|p{1.2cm}|p{7.5cm}|}
+\hline
+\textbf{Componente} & \textbf{Cant.} & \textbf{Descripci\'on} \\
+\hline
+ESP32-C3 OLED 0.96'' & 1 & Microcontrolador nodo sensor. Incluye pantalla OLED
+72$\times$40\,px integrada (I2C: SCL$\to$GPIO6, SDA$\to$GPIO5). \\
+\hline
+Heltec ESP32-S3 V4 & 1 & Microcontrolador gateway. Incluye pantalla OLED integrada
+(SCL$\to$GPIO18, SDA$\to$GPIO17) y antena LoRa. \\
+\hline
+M\'odulo PH4502C + sonda & 1 & M\'odulo acondicionador de se\~nal para sonda de pH.
+Salida anal\'ogica 0--3,3\,V compatible con ESP32. \\
+\hline
+Bot\'on t\'actil & 1 & Pulsador de 4 pines para montar en protoboard. \\
+\hline
+Soluci\'on tampón KCl pH~7 & 1 & Soluci\'on de calibraci\'on de cloruro de potasio
+a pH~7. \\
+\hline
+Protoboard & 1 & Placa de prototipado sin soldadura. \\
+\hline
+Jumpers macho--macho & $\times$ & Cables de conexi\'on para protoboard. \\
+\hline
+Level shifter 5V$\leftrightarrow$3,3V \textit{(opcional)} & 1 & Necesario si el
+m\'odulo PH4502C se alimenta a 5\,V y la salida anal\'ogica supera 3,3\,V. \\
+\hline
+\end{tabular}
+\caption{Kit de materiales del Laboratorio 2.}
+\end{table}
+
+\begin{notabox}[Nota sobre el level shifter]
+El m\'odulo PH4502C puede alimentarse tanto a 5\,V como a 3,3\,V. Si se opera a
+3,3\,V (VCC del ESP32), la salida anal\'ogica (Po) permanece dentro del rango ADC
+del ESP32-C3 y no se requiere adaptador de nivel. Si se opera a 5\,V, la salida
+puede superar 3,3\,V y da\~nar el ADC; en ese caso se debe agregar un divisor de
+voltaje o un level shifter en la l\'inea Po$\to$GPIO.
+\end{notabox}
+
+%% -------------------------------------------------------
+%%  DESCRIPCIÓN DEL HARDWARE
+%% -------------------------------------------------------
+\newpage
+\section{Descripci\'on del Hardware}
+
+\subsection{ESP32-C3 OLED --- Pines Reservados}
+
+El m\'odulo ESP32-C3 utilizado en este laboratorio incorpora una pantalla OLED de
+72$\times$40\,px conectada \textbf{internamente} a los siguientes pines, que
+\textbf{no deben usarse} para ning\'un perif\'erico externo:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{6cm}|p{3cm}|}
+\hline
+\textbf{Funci\'on integrada} & \textbf{GPIO} \\
+\hline
+OLED SCL (I2C clock) & GPIO6 \\
+\hline
+OLED SDA (I2C data) & GPIO5 \\
+\hline
+\end{tabular}
+\caption{Pines reservados del ESP32-C3 OLED.}
+\end{table}
+
+Los pines disponibles para conexiones externas son:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{2.5cm}|p{4cm}|p{6cm}|}
+\hline
+\textbf{GPIO} & \textbf{Funci\'on alternativa} & \textbf{Uso sugerido} \\
+\hline
+GPIO0 & ADC CH0 (A0) & Anal\'ogico \\
+\hline
+GPIO1 & ADC CH1 (A1) & \textbf{Salida anal\'ogica del PH4502C (Po)} \\
+\hline
+GPIO2 & ADC CH2 (A2) & Anal\'ogico \\
+\hline
+GPIO3 & ADC CH3 (A3) & Anal\'ogico / Digital \\
+\hline
+GPIO4 & Digital & Digital \\
+\hline
+GPIO9 & BOOT button & \textbf{Bot\'on de usuario} (activo en LOW) \\
+\hline
+GPIO10 & Digital & Digital \\
+\hline
+GPIO20 & RX (Serial) & Serial \\
+\hline
+GPIO21 & TX (Serial) & Serial \\
+\hline
+\end{tabular}
+\caption{Pines disponibles del ESP32-C3 OLED para conexiones externas.}
+\end{table}
+
+\noindent\textbf{Pregunta de dise\~no:} \textquestiondown Por qu\'e GPIO9 ya tiene
+una resistencia pull-up integrada en el m\'odulo y c\'omo simplifica esto el
+circuito del bot\'on?
+
+\subsection{Heltec ESP32-S3 V4 --- Pines Reservados}
+
+El m\'odulo Heltec ESP32-S3~V4 tiene los siguientes pines reservados para
+perif\'ericos integrados que \textbf{no deben usarse} para conexiones externas:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{6cm}|p{3cm}|}
+\hline
+\textbf{Funci\'on integrada} & \textbf{GPIO} \\
+\hline
+OLED SCL & GPIO18 \\
+\hline
+OLED SDA & GPIO17 \\
+\hline
+OLED RST & GPIO21 \\
+\hline
+LED WS2812 (LED\_Write) & GPIO35 \\
+\hline
+Bot\'on de usuario (USER\_SW) & GPIO0 \\
+\hline
+LoRa NSS & GPIO8 \\
+\hline
+LoRa SCK & GPIO9 \\
+\hline
+LoRa MOSI & GPIO10 \\
+\hline
+LoRa MISO & GPIO11 \\
+\hline
+LoRa RST & GPIO12 \\
+\hline
+LoRa BUSY & GPIO13 \\
+\hline
+\end{tabular}
+\caption{Pines reservados del Heltec ESP32-S3 V4.}
+\end{table}
+
+\noindent Para este laboratorio, el Heltec act\'ua \'unicamente como receptor
+ESP-NOW con visualizaci\'on en pantalla. No se requieren conexiones externas de
+hardware adicionales en este dispositivo.
+
+%% -------------------------------------------------------
+%%  DESAFÍOS
+%% -------------------------------------------------------
+\newpage
+\section{Desaf\'ios}
+
+Los cuatro desaf\'ios est\'an dise\~nados para construirse de forma incremental.
+El Desaf\'io 4 integra los resultados de los anteriores.
+
+\bigskip
+
+%% -------------------------------------------------------
+%%  DESAFÍO 1
+%% -------------------------------------------------------
+\subsection{Desaf\'io 1 --- Conexi\'on del Sensor de pH al ESP32-C3}
+
+\textbf{Objetivo:} Configurar el entorno de desarrollo para el ESP32-C3, identificar
+los pines disponibles, conectar el m\'odulo PH4502C y verificar que la lectura
+anal\'ogica llega correctamente al microcontrolador.
+
+\subsubsection*{Paso 1: Configuraci\'on de Arduino IDE para ESP32-C3}
+
+Si el soporte para ESP32 no est\'a instalado, agregar el repositorio de Espressif:
+
+\begin{enumerate}[(1)]
+    \item Abrir Arduino IDE y dirigirse a \textbf{File $\rightarrow$ Preferences}.
+    \item En \textit{Additional boards manager URLs} ingresar:\\
+    \texttt{\small https://espressif.github.io/arduino-esp32/package\_esp32\_index.json}
+    \item Ir a \textbf{Tools $\rightarrow$ Board $\rightarrow$ Boards Manager},
+    buscar \texttt{esp32} e instalar la versi\'on m\'as reciente de
+    \textbf{Espressif Systems}.
+    \item Conectar el ESP32-C3 por USB y en \textbf{Tools $\rightarrow$ Board}
+    seleccionar \textbf{ESP32C3 Dev Module}.
+    \item En \textbf{Tools $\rightarrow$ Port} seleccionar el puerto correspondiente.
+\end{enumerate}
+
+\begin{notabox}[Importante]
+Algunos m\'odulos ESP32-C3 requieren mantener presionado el bot\'on BOOT al
+conectar por primera vez para entrar en modo de programaci\'on. Si el puerto no
+aparece, intentar este procedimiento.
+\end{notabox}
+
+\subsubsection*{Paso 2: Instalaci\'on de la Librer\'ia U8g2}
+
+La pantalla OLED integrada se controla con la librer\'ia \textbf{U8g2}:
+
+\begin{enumerate}[(1)]
+    \item En Arduino IDE ir a \textbf{Sketch $\rightarrow$ Include Library
+    $\rightarrow$ Manage Libraries}.
+    \item Buscar \texttt{U8g2} (autor: oliver) e instalar la versi\'on m\'as
+    reciente.
+\end{enumerate}
+
+\subsubsection*{Paso 3: Conexionado del M\'odulo PH4502C}
+
+Realizar las conexiones seg\'un la siguiente tabla. Verificar la tensi\'on de
+alimentaci\'on antes de conectar (ver nota sobre level shifter en secci\'on 2):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{4cm}|p{4cm}|p{5cm}|}
+\hline
+\textbf{Pin PH4502C} & \textbf{Pin ESP32-C3} & \textbf{Descripci\'on} \\
+\hline
+VCC & 3V3 & Alimentaci\'on 3,3\,V \\
+\hline
+GND & GND & Tierra com\'un \\
+\hline
+Po (salida anal\'ogica) & GPIO1 & Se\~nal de pH en voltaje \\
+\hline
+\end{tabular}
+\caption{Conexionado del PH4502C al ESP32-C3.}
+\end{table}
+
+\noindent Los pines To (temperatura) y BNC (sonda de pH) del m\'odulo conectan
+directamente a la sonda. El ajuste grueso de offset se realiza con el
+potenci\'ometro del m\'odulo; el ajuste fino se realiza por software en el
+Desaf\'io~2.
+
+\pagebreak
+\subsubsection*{Paso 4: An\'alisis del Firmware}
+
+A continuaci\'on se presenta el firmware base, desglosado por bloques. El equipo
+debe \textbf{transcribir, compilar y cargar} el c\'odigo completo comprendiendo
+cada secci\'on antes de pasar al siguiente desaf\'io.
+
+\bigskip
+\noindent\textbf{Bloque 1 --- Librer\'ias y constantes}
+
+\smallskip
+\noindent Se incluyen las librer\'ias necesarias y se definen los pines y las
+constantes del modelo de pH. \texttt{PH\_SLOPE} es la pendiente de la curva del
+electrodo (valor t\'ipico del fabricante). \texttt{PH\_OFFSET} desplaza la curva
+verticalmente y es el valor que se ajustar\'a durante la calibraci\'on en el
+Desaf\'io~2.
+
+\begin{lstlisting}
+#include <Arduino.h>
+#include <U8g2lib.h>
+#include <Wire.h>
+
+#define PH_PIN    1
+#define SDA_PIN   5
+#define SCL_PIN   6
+
+#define PH_SLOPE   -5.70
+#define PH_OFFSET   21.34
+\end{lstlisting}
+
+\bigskip
+\noindent\textbf{Bloque 2 --- Objeto de la pantalla}
+
+\smallskip
+\noindent Esta l\'inea crea el objeto que representa la pantalla OLED. Los
+par\'ametros indican: orientaci\'on (\texttt{U8G2\_R0} = sin rotaci\'on), sin pin
+de reset (\texttt{U8X8\_PIN\_NONE}), y los pines de reloj y datos I2C. El nombre
+largo identifica exactamente el controlador (\texttt{SSD1306}) y la resoluci\'on
+(72$\times$40\,px) de la pantalla integrada en el m\'odulo.
+
+\begin{lstlisting}
+U8G2_SSD1306_72X40_ER_F_HW_I2C display(U8G2_R0, U8X8_PIN_NONE, SCL_PIN, SDA_PIN);
+\end{lstlisting}
+
+\bigskip
+\noindent\textbf{Bloque 3 --- Setup}
+
+\smallskip
+\noindent \texttt{analogSetAttenuation(ADC\_11db)} configura el ADC para que pueda
+leer voltajes de hasta 3,3\,V. Sin esta l\'inea el rango m\'aximo es aproximadamente
+1\,V, y la lectura del sensor saturar\'a y dar\'a valores incorrectos.
+
+\begin{lstlisting}
+void setup() {
+  Serial.begin(115200);
+  analogSetAttenuation(ADC_11db);
+  display.begin();
+}
+\end{lstlisting}
+
+\bigskip
+\noindent\textbf{Bloque 4 --- Lectura del sensor y conversi\'on a pH}
+
+\smallskip
+\noindent \texttt{analogRead} devuelve un n\'umero entero entre 0 y 4095 (ADC de
+12~bits). Multiplicarlo por $3{,}3\,/\,4095{,}0$ convierte ese valor crudo a
+voltios. Luego se aplica la ecuaci\'on lineal $\mathrm{pH} = \mathrm{pendiente}
+\times \mathrm{voltaje} + \mathrm{offset}$ para obtener el pH.
+
+\begin{lstlisting}
+float voltage = analogRead(PH_PIN) * 3.3 / 4095.0;
+float ph      = PH_SLOPE * voltage + PH_OFFSET;
+\end{lstlisting}
+
+\bigskip
+\noindent\textbf{Bloque 5 --- Visualizaci\'on en pantalla OLED}
+
+\smallskip
+\noindent La pantalla trabaja con un buffer en memoria: primero se borra
+(\texttt{clearBuffer}), luego se dibuja todo lo que se quiere mostrar, y finalmente
+se env\'ia el buffer completo a la pantalla (\texttt{sendBuffer}). Esto evita
+parpadeos. \texttt{dtostrf} convierte el n\'umero flotante de pH a una cadena de
+texto (\texttt{char[]}) porque \texttt{drawStr} solo puede dibujar texto, no
+n\'umeros directamente. Los dos \texttt{setFont} usan fuentes de distinto tama\~no:
+una peque\~na para la etiqueta y una grande para el valor. Las coordenadas en
+\texttt{drawStr(x,y,texto)} indican la posici\'on en p\'ixeles desde la esquina
+superior izquierda de la pantalla (72$\times$40\,px).
+
+\begin{lstlisting}
+char phText[8];
+dtostrf(ph, 4, 2, phText);
+
+display.clearBuffer();
+display.setFont(u8g2_font_helvB08_tr);
+display.drawStr(0, 10, "pH level");
+display.setFont(u8g2_font_helvB18_tr);
+display.drawStr(4, 36, phText);
+display.sendBuffer();
+
+delay(2000);
+\end{lstlisting}
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 1 se considera completado cuando el monitor serial imprime valores de
+pH num\'ericos de forma continua y la pantalla OLED del ESP32-C3 muestra el valor
+actualizado cada 2 segundos.
+
+\newpage
+%% -------------------------------------------------------
+%%  DESAFÍO 2
+%% -------------------------------------------------------
+\subsection{Desaf\'io 2 --- Calibraci\'on del Sensor con Soluci\'on pH~7}
+
+\textbf{Objetivo:} Calibrar el sensor de pH utilizando la soluci\'on tamp\'on de
+KCl (pH~7) ajustando la constante \texttt{PH\_OFFSET} del firmware, de modo que
+la lectura mostrada coincida con el pH de referencia.
+
+\subsubsection*{Paso 1: Preparaci\'on}
+
+\begin{enumerate}[(1)]
+    \item Enjuagar la sonda de pH con agua destilada y secarla suavemente con papel
+    absorbente.
+    \item Sumergir la sonda en la soluci\'on tamp\'on de KCl (pH~7). Esperar
+    \textbf{al menos 60 segundos} para que la sonda se estabilice.
+    \item Observar los valores que aparecen en el monitor serial.
+\end{enumerate}
+
+\subsubsection*{Paso 2: Ajuste del Offset por Software}
+
+La relaci\'on entre voltaje y pH es lineal:
+
+\[
+  \mathrm{pH} = \mathtt{PH\_SLOPE} \times \mathrm{voltaje} + \mathtt{PH\_OFFSET}
+\]
+
+Si la pantalla muestra un valor distinto de 7,00 con la sonda en la soluci\'on de
+referencia, calcular el nuevo offset despejando de la ecuaci\'on:
+
+\[
+  \mathtt{PH\_OFFSET}_{\mathrm{nuevo}}
+    = 7{,}00 - \left(\mathtt{PH\_SLOPE} \times \mathrm{voltaje\_medido}\right)
+\]
+
+Reemplazar el valor de \texttt{PH\_OFFSET} en el c\'odigo, recompilar y volver a
+cargar el firmware. Repetir hasta que la lectura muestre $7{,}00 \pm 0{,}10$.
+
+\begin{notabox}
+El potenci\'ometro del m\'odulo PH4502C permite un ajuste grueso de offset en
+hardware. Si la lectura est\'a muy lejos de 7 (m\'as de 2 unidades), ajustar
+primero el potenci\'ometro y luego afinar por software.
+\end{notabox}
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 2 se considera completado cuando la pantalla muestra una lectura
+estable dentro del rango 6,90--7,10 con la sonda sumergida en la soluci\'on tamp\'on.
+
+\bigskip
+
+%% -------------------------------------------------------
+%%  DESAFÍO 3
+%% -------------------------------------------------------
+\subsection{Desaf\'io 3 --- Medici\'on de Muestras}
+
+\textbf{Objetivo:} Utilizar el sistema calibrado para medir el pH de al menos dos
+sustancias conocidas y comparar los resultados con los valores de referencia.
+
+\subsubsection*{Paso 1: Procedimiento de Medici\'on}
+
+Para cada muestra:
+\begin{enumerate}[(1)]
+    \item Retirar la sonda de la muestra anterior, enjuagar con agua destilada
+    y secar.
+    \item Sumergir la sonda en la nueva muestra y esperar al menos 30 segundos.
+    \item Registrar el valor estabilizado que aparece en pantalla y en el monitor
+    serial.
+\end{enumerate}
+
+\subsubsection*{Paso 2: Muestras Requeridas}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{5cm}|p{3.5cm}|p{4cm}|}
+\hline
+\textbf{Muestra} & \textbf{pH de referencia} & \textbf{pH medido} \\
+\hline
+Soluci\'on KCl pH~7 (verificaci\'on) & 7,00 & \\
+\hline
+Vinagre blanco o jugo de lim\'on & 2,4 -- 3,0 & \\
+\hline
+Muestra libre (a elecci\'on del equipo) & --- & \\
+\hline
+\end{tabular}
+\caption{Tabla de mediciones del Desaf\'io 3.}
+\end{table}
+
+\noindent Para la muestra libre, el equipo puede elegir cualquier l\'iquido
+disponible (agua del grifo, bebida, etc.) y estimar su pH de referencia antes de
+medir.
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 3 se considera completado cuando se registran mediciones para las tres
+muestras y el vinagre o jugo de lim\'on marca entre 2,0 y 3,5.
+
+\newpage
+%% -------------------------------------------------------
+%%  DESAFÍO 4
+%% -------------------------------------------------------
+\subsection{Desaf\'io 4 --- Comunicaci\'on ESP-NOW con el Heltec ESP32-S3~V4}
+
+\textbf{Objetivo:} Transmitir la lectura de pH del ESP32-C3 (nodo sensor) al
+Heltec ESP32-S3~V4 (gateway) mediante el protocolo ESP-NOW, activando el env\'io
+con un bot\'on f\'isico y mostrando el valor recibido en la pantalla OLED del
+gateway.
+
+\subsubsection*{Paso 1: Configuraci\'on de Arduino IDE para Heltec ESP32-S3~V4}
+
+El Heltec ESP32-S3~V4 requiere su propio soporte de placa adicional al de Espressif:
+
+\begin{enumerate}[(1)]
+    \item En \textbf{File $\rightarrow$ Preferences $\rightarrow$ Additional boards
+    manager URLs} agregar (separado por coma del anterior):\\
+    \texttt{\small https://github.com/Heltec-Aaron-Lee/WiFi\_Kit\_series/releases/download/3.3.8/package\_heltec\_esp32\_index.json}
+    \item En \textbf{Tools $\rightarrow$ Board $\rightarrow$ Boards Manager} buscar
+    \texttt{Heltec} e instalar \textbf{Heltec ESP32 Series Dev-boards}.
+    \item Seleccionar \textbf{Tools $\rightarrow$ Board $\rightarrow$ Heltec ESP32
+    Series $\rightarrow$ WiFi LoRa 32 (V4)}.
+    \item Verificar que la pantalla OLED integrada funciona cargando el ejemplo
+    \textbf{File $\rightarrow$ Examples $\rightarrow$ Heltec ESP32 Dev-Boards
+    $\rightarrow$ OLED $\rightarrow$ SSD1306SimpleDemo}.
+\end{enumerate}
+
+\subsubsection*{Paso 2: Obtenci\'on de la Direcci\'on MAC del Gateway}
+
+El Nodo ESP32-C3 necesita conocer la direcci\'on MAC del Gateway antes de poder
+enviarle datos. ESP-NOW usa la MAC como direcci\'on de destino, de la misma forma
+que una carta necesita una direcci\'on postal. Cargar el siguiente sketch en el
+\textbf{Heltec ESP32-S3} y anotar la direcci\'on MAC que aparece en el monitor
+serial:
+
+\begin{lstlisting}
+#include <WiFi.h>
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+  WiFi.mode(WIFI_STA);
+  delay(500);
+}
+
+void loop() {
+  String mac = WiFi.macAddress();
+  if (mac == "00:00:00:00:00:00") {
+    Serial.println("Esperando inicializacion WiFi...");
+  } else {
+    Serial.print("MAC Gateway: ");
+    Serial.println(mac);
+  }
+  delay(1000);
+}
+\end{lstlisting}
+
+\noindent Registrar la direcci\'on obtenida (formato \texttt{AA:BB:CC:DD:EE:FF}).
+Se usar\'a en el paso siguiente.
+
+\subsubsection*{Paso 3: Conexi\'on del Bot\'on al ESP32-C3}
+
+Conectar el bot\'on t\'actil entre \textbf{GPIO9} y \textbf{GND}. GPIO9 ya cuenta
+con una resistencia pull-up interna, por lo que no se necesita resistencia externa.
+El pin lee \texttt{LOW} cuando el bot\'on est\'a presionado.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{4cm}|p{4cm}|}
+\hline
+\textbf{Pin bot\'on} & \textbf{Pin ESP32-C3} \\
+\hline
+Terminal A & GPIO9 \\
+\hline
+Terminal B & GND \\
+\hline
+\end{tabular}
+\caption{Conexi\'on del bot\'on al ESP32-C3.}
+\end{table}
+
+\pagebreak
+\subsubsection*{Paso 4: Firmware del Nodo ESP32-C3}
+
+El nodo inicializa ESP-NOW, registra el gateway como destinatario
+(\textit{peer}), y env\'ia la lectura de pH cada vez que se presiona el bot\'on.
+
+\bigskip
+\noindent\textbf{Configuraci\'on de ESP-NOW y registro del peer}
+
+\smallskip
+\noindent Reemplazar \texttt{0xAA, 0xBB...} con los bytes de la MAC obtenida en el
+Paso~2. El arreglo \texttt{gatewayMac} le indica al nodo a qui\'en enviar los datos.
+
+\begin{lstlisting}
+#include <WiFi.h>
+#include <esp_now.h>
+
+uint8_t gatewayMac[] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
+
+void setup() {
+  WiFi.mode(WIFI_STA);
+  esp_now_init();
+
+  esp_now_peer_info_t peer = {};
+  memcpy(peer.peer_addr, gatewayMac, 6);
+  peer.channel = 0;
+  peer.encrypt = false;
+  esp_now_add_peer(&peer);
+}
+\end{lstlisting}
+
+\bigskip
+\noindent\textbf{Estructura del paquete}
+
+\smallskip
+\noindent Para enviar datos por ESP-NOW se define una estructura que agrupa toda la
+informaci\'on que viaja en cada mensaje. Definirla igual en el nodo y en el gateway
+es obligatorio: si las estructuras no coinciden, los datos se interpretan
+incorrectamente en el receptor.
+
+\begin{lstlisting}
+typedef struct {
+  float ph;
+} PhPacket;
+
+PhPacket paquete;
+\end{lstlisting}
+
+\bigskip
+\noindent\textbf{Env\'io al presionar el bot\'on}
+
+\smallskip
+\noindent El bot\'on se lee con \texttt{digitalRead}. Cuando el pin pasa de HIGH a
+LOW (flanco de bajada), se toma una lectura y se env\'ia. \texttt{esp\_now\_send}
+transmite los bytes de la estructura al gateway.
+
+\begin{lstlisting}
+#define BTN_PIN 9
+
+void loop() {
+  static bool lastState = HIGH;
+  bool state = digitalRead(BTN_PIN);
+
+  if (lastState == HIGH && state == LOW) {
+    float voltage = analogRead(PH_PIN) * 3.3 / 4095.0;
+    paquete.ph    = PH_SLOPE * voltage + PH_OFFSET;
+
+    esp_now_send(gatewayMac, (uint8_t *)&paquete, sizeof(paquete));
+    Serial.print("Enviado pH: ");
+    Serial.println(paquete.ph, 2);
+  }
+
+  lastState = state;
+  delay(20);
+}
+\end{lstlisting}
+
+\bigskip
+\begin{pensarbox}
+\textbf{Promedio de muestras.} En los desaf\'ios anteriores se tom\'o una sola
+lectura. El ADC del ESP32 tiene ruido, por lo que una \'unica muestra puede ser
+imprecisa. Una mejora es tomar varias lecturas consecutivas y promediarlas antes
+de enviar:
+
+\begin{lstlisting}[numbers=none]
+float leerPhPromedio() {
+  float suma = 0;
+  for (int i = 0; i < 10; i++) {
+    float v = analogRead(PH_PIN) * 3.3 / 4095.0;
+    suma += PH_SLOPE * v + PH_OFFSET;
+    delay(10);
+  }
+  return suma / 10.0;
+}
+\end{lstlisting}
+
+Llamar a \texttt{leerPhPromedio()} en lugar de calcular el pH directamente al
+presionar el bot\'on. \textquestiondown Cu\'anto cambia el valor respecto a la
+lectura simple? \textquestiondown Con cu\'antas muestras deja de mejorar la
+precisi\'on?
+\end{pensarbox}
+
+\bigskip
+\begin{pensarbox}
+\textbf{Historial de mediciones.} Actualmente el sistema solo recuerda el \'ultimo
+valor enviado. \textquestiondown Qu\'e habr\'ia que agregar al firmware para guardar
+las \'ultimas $N$ mediciones y poder consultarlas despu\'es? Pensar en:
+
+\begin{itemize}
+    \item \textquestiondown Qu\'e estructura de datos usar\'ian para almacenar un
+    historial de lecturas?
+    \item \textquestiondown C\'omo mostrar\'ian m\'as de un valor en la pantalla
+    OLED si esta es de solo 72$\times$40\,px?
+    \item \textquestiondown Qu\'e pasa con el historial cuando el dispositivo se
+    reinicia?
+\end{itemize}
+\end{pensarbox}
+
+\bigskip
+\begin{pensarbox}
+\textbf{Marca de tiempo.} Cada medici\'on enviada incluye solo el valor de pH. En
+una aplicaci\'on real es fundamental saber \textit{cu\'ando} se tom\'o cada muestra.
+\textquestiondown Qu\'e opciones existen para agregar fecha y hora a cada paquete?
+
+\begin{itemize}
+    \item \texttt{millis()} da el tiempo transcurrido desde el encendido, pero se
+    reinicia a cero si se corta la alimentaci\'on. \textquestiondown Es \'util?
+    \item Para tener hora real se necesita un m\'odulo RTC externo (ej. DS3231)
+    o sincronizar v\'ia red con NTP (\texttt{configTime}).
+    \textquestiondown Cu\'al de las dos opciones ser\'ia viable con el hardware
+    disponible en el kit?
+\end{itemize}
+\end{pensarbox}
+
+\pagebreak
+\subsubsection*{Paso 5: Firmware del Gateway Heltec ESP32-S3}
+
+El gateway espera paquetes ESP-NOW en segundo plano mediante una funci\'on de
+\textit{callback} que el sistema llama autom\'aticamente cada vez que llega un
+mensaje. El equipo debe implementar el siguiente firmware y completar la
+visualizaci\'on en pantalla:
+
+\begin{lstlisting}
+#include <WiFi.h>
+#include <esp_now.h>
+
+typedef struct {
+  float ph;
+} PhPacket;
+
+void onReceive(const uint8_t *mac, const uint8_t *data, int len) {
+  PhPacket paquete;
+  memcpy(&paquete, data, sizeof(paquete));
+
+  Serial.print("pH recibido: ");
+  Serial.println(paquete.ph, 2);
+
+  // Mostrar el valor en la pantalla OLED del Heltec
+}
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA);
+  esp_now_init();
+  esp_now_register_recv_cb(onReceive);
+}
+
+void loop() {}
+\end{lstlisting}
+
+\begin{notabox}
+En el Heltec ESP32-S3~V4, la pantalla OLED se controla con U8g2 apuntando a
+GPIO17~(SDA) y GPIO18~(SCL). El equipo debe adaptar el c\'odigo de visualizaci\'on
+del Desaf\'io~1 a este firmware.
+\end{notabox}
+
+\subsubsection*{Paso 6: Ajuste de Potencia de Transmisi\'on WiFi}
+
+El ESP32-C3 permite regular la potencia de su antena, usada tambi\'en por ESP-NOW.
+En el laboratorio, con los dispositivos a pocos metros, no es necesaria la potencia
+m\'axima:
+
+\begin{lstlisting}
+// En setup(), despues de esp_now_init():
+esp_wifi_set_max_tx_power(40);  // ~10 dBm  (rango: 8 = 2 dBm, 84 = 20 dBm)
+\end{lstlisting}
+
+\noindent\textbf{Pregunta de dise\~no:} \textquestiondown Qu\'e implicaciones tiene
+operar ESP-NOW a m\'axima potencia en un entorno con m\'ultiples dispositivos WiFi?
+\textquestiondown En qu\'e escenarios ser\'ia preferible reducir la potencia de
+transmisi\'on?
+
+\subsubsection*{Criterio de Aceptaci\'on}
+
+El Desaf\'io 4 se considera completado cuando al presionar el bot\'on en el
+ESP32-C3, el valor de pH medido aparece en la pantalla OLED del Heltec
+ESP32-S3~V4 en menos de 1 segundo y ambos monitores seriales registran los eventos
+de env\'io y recepci\'on.
+
+\end{document}
