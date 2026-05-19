@@ -1000,7 +1000,7 @@ El SQL Editor guarda historial de queries — pueden volver a versiones anterior
 <div class="grid grid-cols-2 gap-4 mt-3 text-xs">
   <div class="flex flex-col gap-2">
     <div class="p-2 rounded-lg border border-orange-400/40 bg-orange-500/10">
-      <div class="font-bold mb-1">Looker Studio <span class="opacity-50 font-normal">(antes Google Data Studio)</span></div>
+      <div class="font-bold mb-1">Data Studio <span class="opacity-50 font-normal">(antes Google Looker Studio)</span></div>
       <div class="opacity-80">Ingresar en <strong>datastudio.google.com</strong> con el correo de la universidad. Crear un informe nuevo con el botón <strong>+</strong>.</div>
     </div>
     <div class="flex flex-col gap-1.5">
@@ -1034,51 +1034,4 @@ El SQL Editor guarda historial de queries — pueden volver a versiones anterior
 Looker Studio puede tardar unos segundos en verificar la conexión — es normal.
 Si aparece error de IPv4: usar Session Pooler en vez de Direct — cambiar el puerto a 6543 y el host al de Session Pooler.
 Una vez conectado, arrastrar campos como temp_int y timestamp para crear un gráfico de línea en tiempo real.
--->
-
----
-
-# Looker Studio — Visualizar los datos
-
-<div class="grid grid-cols-2 gap-4 mt-4 text-xs">
-  <div class="flex flex-col gap-2">
-    <div class="p-3 rounded-lg border border-orange-400/40 bg-orange-500/10">
-      <div class="font-bold mb-2">Agregar una tabla</div>
-      <div class="opacity-80 flex flex-col gap-1">
-        <div>1. En la barra superior: <strong>Insertar → Tabla</strong></div>
-        <div>2. Dibujar el área en el lienzo</div>
-        <div>3. En el panel derecho elegir las dimensiones (<strong>timestamp</strong>) y métricas (<strong>co2, temp_int, temp_ext, humidity, ph</strong>)</div>
-        <div>4. Ordenar por <strong>timestamp descendente</strong> para ver las lecturas más recientes primero</div>
-      </div>
-    </div>
-    <div class="p-3 rounded-lg border border-blue-400/40 bg-blue-500/10">
-      <div class="font-bold mb-2">Agregar un gráfico</div>
-      <div class="opacity-80 flex flex-col gap-1">
-        <div>1. <strong>Insertar → Gráfico de líneas</strong> (o el de su elección)</div>
-        <div>2. Dimensión: <strong>timestamp</strong></div>
-        <div>3. Métrica: la variable que quieran visualizar (<strong>co2</strong>, <strong>temp_int</strong>, etc.)</div>
-        <div>4. Pueden agregar múltiples métricas en el mismo gráfico para comparar</div>
-      </div>
-    </div>
-  </div>
-  <div class="flex flex-col gap-2">
-    <div class="p-3 rounded bg-white/5 border border-white/10">
-      <div class="font-bold mb-2">Tipos de gráfico recomendados para IoT</div>
-      <div class="flex flex-col gap-1 opacity-80">
-        <div><strong>Líneas</strong> — evolución de temperatura o CO2 en el tiempo</div>
-        <div><strong>Indicador</strong> — mostrar el último valor registrado</div>
-        <div><strong>Tabla</strong> — ver todas las lecturas con filtros</div>
-        <div><strong>Barras</strong> — comparar promedios por hora o día</div>
-      </div>
-    </div>
-    <div class="p-2 rounded bg-white/5 border border-white/10 text-xs opacity-70">
-      El informe se actualiza automáticamente cada vez que llegan nuevos datos a la tabla de Supabase.
-    </div>
-  </div>
-</div>
-
-<!--
-Mostrar en vivo: agregar un gráfico de líneas con timestamp en X y temp_int en Y. Aparecen los 5 puntos de los datos insertados.
-Indicador: arrastrar co2 como métrica y configurar rango de color (verde < 400, amarillo 400-600, rojo > 600).
-El dashboard se puede compartir con un link — ideal para que el equipo vea los datos del ESP32 en tiempo real.
 -->
